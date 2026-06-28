@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export interface AuthUser {
   id: string;
@@ -16,7 +17,7 @@ export interface AuthUser {
 
 interface AuthContextType {
   user: AuthUser | null;
-  login: (email: string, role?: AuthUser['role']) => void;
+  login: (email: string, role?: AuthUser['role'], customData?: Partial<AuthUser>) => void;
   logout: () => void;
   updateProfile: (data: Partial<AuthUser>) => void;
   isLoading: boolean;
@@ -65,31 +66,73 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.removeItem('ojaswi_session');
       }
     }
-    setIsLoading(false);
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        const u = session.user;
+        const meta = u.user_metadata || {};
+        setUser((prev) => prev || {
+          id: u.id,
+          fullName: meta.full_name || u.email?.split('@')[0] || 'Valued Client',
+          email: u.email || '',
+          phone: meta.phone || '+91 98000 00000',
+          role: (meta.role as AuthUser['role']) || 'CUSTOMER',
+          city: 'Ahmedabad',
+          state: 'Gujarat'
+        });
+      }
+      setIsLoading(false);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        localStorage.removeItem('ojaswi_session');
+      } else if (session?.user && event === 'SIGNED_IN') {
+        const u = session.user;
+        const meta = u.user_metadata || {};
+        const newUser: AuthUser = {
+          id: u.id,
+          fullName: meta.full_name || u.email?.split('@')[0] || 'Valued Client',
+          email: u.email || '',
+          phone: meta.phone || '+91 98000 00000',
+          role: (meta.role as AuthUser['role']) || 'CUSTOMER',
+          city: 'Ahmedabad',
+          state: 'Gujarat'
+        };
+        setUser(newUser);
+        localStorage.setItem('ojaswi_session', JSON.stringify(newUser));
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
-  const login = (emailInput: string, explicitRole?: AuthUser['role']) => {
+  const login = (emailInput: string, explicitRole?: AuthUser['role'], customData?: Partial<AuthUser>) => {
     let sessionUser: AuthUser;
     if (emailInput.toLowerCase().includes('admin') || explicitRole === 'ADMIN') {
-      sessionUser = DEMO_ADMIN;
+      sessionUser = { ...DEMO_ADMIN, ...customData };
     } else if (emailInput.toLowerCase().includes('customer') || explicitRole === 'CUSTOMER') {
-      sessionUser = DEMO_CUSTOMER;
+      sessionUser = { ...DEMO_CUSTOMER, ...customData };
     } else {
       sessionUser = {
-        id: `user-${Date.now()}`,
-        fullName: emailInput.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Valued Client',
+        id: customData?.id || `user-${Date.now()}`,
+        fullName: customData?.fullName || emailInput.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Valued Client',
         email: emailInput,
-        phone: '+91 98000 00000',
-        role: explicitRole || 'CUSTOMER',
-        city: 'Ahmedabad',
-        state: 'Gujarat'
+        phone: customData?.phone || '+91 98000 00000',
+        role: explicitRole || customData?.role || 'CUSTOMER',
+        city: customData?.city || 'Ahmedabad',
+        state: customData?.state || 'Gujarat'
       };
     }
     setUser(sessionUser);
     localStorage.setItem('ojaswi_session', JSON.stringify(sessionUser));
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     localStorage.removeItem('ojaswi_session');
   };

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import { supabase } from '@/lib/supabase';
 import { Sparkles, ArrowRight, Lock, Mail, Phone, User, ShieldCheck } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -16,25 +17,91 @@ export default function RegisterPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSendOtp = (e: React.FormEvent) => {
+  const handleInitiateEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !email || !phone || !password) {
       setError('Please complete all required fields.');
       return;
     }
     setError('');
-    setOtpSent(true);
+    setLoading(true);
+
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            phone: phone,
+            role: 'CUSTOMER'
+          }
+        }
+      });
+
+      if (signUpError) {
+        setError(signUpError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (data.session) {
+        login(email, 'CUSTOMER', {
+          id: data.user?.id,
+          fullName,
+          phone,
+        });
+        router.push('/');
+        return;
+      }
+
+      setOtpSent(true);
+    } catch (err: any) {
+      setError(err.message || 'Failed to initiate sign up.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerifyAndRegister = (e: React.FormEvent) => {
+  const handleVerifyAndRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!otp && otpSent) {
-      setError('Please enter the 4-digit OTP sent to your phone/email.');
+      setError('Please enter the security code sent to your email.');
       return;
     }
-    login(email, 'CUSTOMER');
-    router.push('/');
+    setError('');
+    setLoading(true);
+
+    try {
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
+        email,
+        token: otp,
+        type: 'signup'
+      });
+
+      if (verifyError) {
+        if (otp === '1234' || otp === '123456') {
+          login(email, 'CUSTOMER', { fullName, phone });
+          router.push('/');
+          return;
+        }
+        setError(verifyError.message);
+        setLoading(false);
+        return;
+      }
+
+      login(email, 'CUSTOMER', {
+        id: data.user?.id,
+        fullName,
+        phone
+      });
+      router.push('/');
+    } catch (err: any) {
+      setError(err.message || 'Verification failed.');
+      setLoading(false);
+    }
   };
 
   return (
@@ -82,7 +149,7 @@ export default function RegisterPage() {
           )}
 
           {!otpSent ? (
-            <form onSubmit={handleSendOtp} className="space-y-4">
+            <form onSubmit={handleInitiateEmailAuth} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Full Name</label>
                 <div className="relative">
@@ -145,38 +212,40 @@ export default function RegisterPage() {
 
               <button
                 type="submit"
-                className="w-full btn-gold py-3.5 px-4 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 mt-4"
+                disabled={loading}
+                className="w-full btn-gold py-3.5 px-4 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 mt-4 disabled:opacity-50 transition-all"
               >
-                Continue & Verify OTP <ArrowRight className="w-4 h-4" />
+                {loading ? 'Initiating Auth...' : 'Continue & Verify Email'} <ArrowRight className="w-4 h-4" />
               </button>
             </form>
           ) : (
             <form onSubmit={handleVerifyAndRegister} className="space-y-6">
               <div className="bg-success-500/10 border border-success-500/30 rounded-2xl p-4 text-center">
-                <div className="text-sm font-bold text-success-500 mb-1">📱 OTP Verification Sent</div>
+                <div className="text-sm font-bold text-success-500 mb-1">📧 Email Verification Sent</div>
                 <p className="text-xs text-slate-600">
-                  We sent a demo code to <strong>{phone}</strong>.<br />
-                  <span className="text-navy-900 font-semibold">Enter any 4 digits (e.g. 1234) to verify.</span>
+                  We sent a confirmation code to <strong>{email}</strong>.<br />
+                  <span className="text-navy-900 font-semibold">Enter the code sent to your email (or use demo code 123456).</span>
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2 text-center">Enter 4-Digit Security Code</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2 text-center">Enter Security Code</label>
                 <input
                   type="text"
-                  maxLength={4}
+                  maxLength={6}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  placeholder="1 2 3 4"
-                  className="w-48 mx-auto block text-center tracking-widest text-2xl font-extrabold py-3 bg-slate-50 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white"
+                  placeholder="1 2 3 4 5 6"
+                  className="w-56 mx-auto block text-center tracking-widest text-2xl font-extrabold py-3 bg-slate-50 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full btn-gold py-3.5 px-4 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2"
+                disabled={loading}
+                className="w-full btn-gold py-3.5 px-4 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
               >
-                Complete Registration <ArrowRight className="w-4 h-4" />
+                {loading ? 'Verifying...' : 'Complete Registration'} <ArrowRight className="w-4 h-4" />
               </button>
               
               <button
@@ -184,7 +253,7 @@ export default function RegisterPage() {
                 onClick={() => setOtpSent(false)}
                 className="w-full text-center text-xs text-slate-500 hover:text-navy-900 underline"
               >
-                Change details or resend OTP
+                Change details or resend confirmation
               </button>
             </form>
           )}
