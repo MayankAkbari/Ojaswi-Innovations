@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-900: #0B1F3D;
+  --color-navy-800: #10284C;
+  --color-navy-700: #16314F;
+  --color-gold-500: #C9A227;
+  --color-gold-400: #D6B244;
+  --color-gold-300: #E3C766;
+  --color-ivory-50: #FAF8F2;
+  --color-ivory-100: #F3EFE6;
+  --color-charcoal-900: #15191F;
+  --color-slate-400: #7C8696;
+  --color-success-500: #1E8E5A;
+  --color-warning-500: #D9822B;
+  --color-danger-500: #C0392B;
+  
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  --background: #FAF8F2;
+  --foreground: #15191F;
+}
+
+.dark {
+  --background: #0B1F3D;
+  --foreground: #FAF8F2;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Glassmorphism / Liquid Glass UI */
+.glass-panel {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.5));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(11, 31, 61, 0.08);
+}
+
+.glass-panel-dark {
+  background: linear-gradient(160deg, rgba(22, 49, 79, 0.85), rgba(11, 31, 61, 0.75));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(227, 199, 102, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Gold Gradient CTA Button */
+.btn-gold {
+  background: linear-gradient(135deg, #E3C766, #C9A227);
+  border: 1px solid #8A6B12;
+  color: #0B1F3D;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-gold:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 20px rgba(201, 162, 39, 0.4);
+}
+
+/* Hero Background Gradient with Radial Gold Glow */
+.hero-bg {
+  background: linear-gradient(135deg, #0B1F3D, #081429);
+  position: relative;
+}
+
+.hero-bg::before {
+  content: '';
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(201, 162, 39, 0.15) 0%, rgba(11, 31, 61, 0) 70%);
+  pointer-events: none;
+}

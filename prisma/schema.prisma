@@ -1,0 +1,174 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String   @id @default(cuid())
+  fullName      String
+  email         String   @unique
+  phone         String   @unique
+  passwordHash  String?
+  oauthProvider String?
+  role          Role     @default(CUSTOMER)
+  addressLine1  String?
+  city          String?
+  state         String?
+  pincode       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  proposals     Proposal[]
+  orders        Order[]
+  amcRequests   AMCRequest[]
+  reviews       Review[]
+  auditLogs     AuditLog[]
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  SALES
+  SUPPORT
+  SUPER_ADMIN
+}
+
+model Package {
+  id            String   @id @default(cuid())
+  slug          String   @unique // someshwar | adityanarayan | trivikram
+  name          String
+  maxPages      Int?     // null = unlimited (Trivikram)
+  hasAdminPanel Boolean  @default(false)
+  editions      PackageEdition[]
+}
+
+model PackageEdition {
+  id                String   @id @default(cuid())
+  packageId         String
+  package           Package  @relation(fields: [packageId], references: [id])
+  name              String   // Prarambh Edition | Chaturyug Edition
+  hostingYears      Int
+  domainYears       Int
+  freeChangesMonths Int
+  supportType       String   // "Business Hours" | "24x7"
+  price             Float
+  discountPrice     Float
+  features          String   // JSON stringified bullet list
+  proposals         Proposal[]
+  orders            Order[]
+}
+
+model Proposal {
+  id               String         @id @default(cuid())
+  userId           String
+  user             User           @relation(fields: [userId], references: [id])
+  packageEditionId String
+  packageEdition   PackageEdition @relation(fields: [packageEditionId], references: [id])
+  pdfUrl           String
+  downloadedAt     DateTime       @default(now())
+}
+
+model Order {
+  id                String         @id @default(cuid())
+  userId            String
+  user              User           @relation(fields: [userId], references: [id])
+  packageEditionId  String
+  packageEdition    PackageEdition @relation(fields: [packageEditionId], references: [id])
+  status            OrderStatus    @default(LEAD)
+  whatsappClickedAt DateTime?
+  approvedAt        DateTime?
+  approvedBy        String?
+  amountPaid        Float?
+  tracker           ProjectTracker?
+  createdAt         DateTime       @default(now())
+}
+
+enum OrderStatus {
+  LEAD
+  WHATSAPP_SENT
+  APPROVED
+  IN_PROGRESS
+  HANDED_OVER
+  CANCELLED
+}
+
+model ProjectTracker {
+  id        String       @id @default(cuid())
+  orderId   String       @unique
+  order     Order        @relation(fields: [orderId], references: [id])
+  stage     TrackerStage @default(UNDER_DEVELOPMENT)
+  notes     String?
+  updatedBy String?
+  updatedAt DateTime     @updatedAt
+}
+
+enum TrackerStage {
+  UNDER_DEVELOPMENT
+  DEVELOPMENT_COMPLETED
+  CLIENT_CHANGES_APPROVAL
+  DEPLOYMENT
+  PROJECT_HANDOVER
+}
+
+model AMCRequest {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  orderId     String
+  status      AMCStatus @default(PENDING)
+  requestedAt DateTime  @default(now())
+  resolvedAt  DateTime?
+  amountDue   Float     @default(5500)
+}
+
+enum AMCStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Review {
+  id         String       @id @default(cuid())
+  userId     String
+  user       User         @relation(fields: [userId], references: [id])
+  rating     Int
+  text       String
+  imageUrl   String?
+  status     ReviewStatus @default(PENDING)
+  isFeatured Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  HIDDEN
+}
+
+model PortfolioItem {
+  id           String  @id @default(cuid())
+  industry     String  // Hospitals, Textile, Packaging, Real Estate, etc.
+  title        String
+  thumbnailUrl String
+  liveUrl      String?
+  description  String
+  order        Int     @default(0)
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String
+  actor     User     @relation(fields: [actorId], references: [id])
+  action    String
+  metadata  String?  // JSON string
+  createdAt DateTime @default(now())
+}
+
+model SiteConfig {
+  key   String @id
+  value String
+}
