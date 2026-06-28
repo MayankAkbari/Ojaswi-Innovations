@@ -23,26 +23,14 @@ interface AuthContextType {
   isLoading: boolean;
 }
 
-const DEMO_ADMIN: AuthUser = {
-  id: 'admin-1',
-  fullName: 'Respected Administrative Head',
-  email: 'admin@ojaswi.com',
+const ADMIN_USER: AuthUser = {
+  id: 'admin-mayank',
+  fullName: 'Mayank Akbari',
+  email: 'm.akbari2808@gmail.com',
   phone: '+91 70694 24393',
   role: 'ADMIN',
   city: 'Ahmedabad',
   state: 'Gujarat'
-};
-
-const DEMO_CUSTOMER: AuthUser = {
-  id: 'cust-1',
-  fullName: 'Rajesh Bhai Patel',
-  email: 'customer@ojaswi.com',
-  phone: '+91 98765 43210',
-  role: 'CUSTOMER',
-  addressLine1: '402, Tejomay Tower, S.G. Highway',
-  city: 'Ahmedabad',
-  state: 'Gujarat',
-  pincode: '380015'
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -112,10 +100,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = (emailInput: string, explicitRole?: AuthUser['role'], customData?: Partial<AuthUser>) => {
     let sessionUser: AuthUser;
-    if (emailInput.toLowerCase().includes('admin') || explicitRole === 'ADMIN') {
-      sessionUser = { ...DEMO_ADMIN, ...customData };
-    } else if (emailInput.toLowerCase().includes('customer') || explicitRole === 'CUSTOMER') {
-      sessionUser = { ...DEMO_CUSTOMER, ...customData };
+    if (emailInput.trim().toLowerCase() === 'm.akbari2808@gmail.com' || explicitRole === 'ADMIN') {
+      sessionUser = { ...ADMIN_USER, ...customData };
     } else {
       sessionUser = {
         id: customData?.id || `user-${Date.now()}`,

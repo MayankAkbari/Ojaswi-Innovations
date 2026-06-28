@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { ShieldCheck, Sparkles, ArrowRight, Lock, Mail, KeyRound, UserCheck } from 'lucide-react';
+import { ShieldCheck, Sparkles, ArrowRight, Lock, Mail, UserCheck } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -13,27 +14,36 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      setError('Please enter your registered email or phone number.');
+    if (!email || !password) {
+      setError('Please enter your email and password.');
       return;
     }
-    const role = email.toLowerCase().includes('admin') ? 'ADMIN' : 'CUSTOMER';
-    login(email, role);
-    router.push(role === 'ADMIN' ? '/admin' : '/');
-  };
-
-  const fillDemoCustomer = () => {
-    setEmail('customer@ojaswi.com');
-    setPassword('Customer@123');
     setError('');
-  };
 
-  const fillDemoAdmin = () => {
-    setEmail('admin@ojaswi.com');
-    setPassword('Admin@123');
-    setError('');
+    if (email.trim().toLowerCase() === 'm.akbari2808@gmail.com') {
+      if (password !== 'Mayank@A_2808') {
+        setError('Invalid password for Admin login.');
+        return;
+      }
+      login(email, 'ADMIN');
+      router.push('/admin');
+      return;
+    }
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError && password.length < 6) {
+      setError(signInError.message || 'Invalid login credentials.');
+      return;
+    }
+
+    login(email, 'CUSTOMER');
+    router.push('/dashboard');
   };
 
   return (
@@ -81,31 +91,6 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Quick Demo Credentials Banner */}
-          <div className="bg-gold-500/10 border border-gold-500/30 rounded-2xl p-4 text-xs space-y-2.5">
-            <div className="font-bold text-navy-900 flex items-center gap-1.5">
-              <KeyRound className="w-4 h-4 text-gold-500" /> Instant Review Demo Credentials:
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={fillDemoCustomer}
-                className="w-full bg-white hover:bg-gold-50 text-navy-900 font-semibold py-2 px-3 rounded-xl border border-gold-500/30 text-left transition-colors flex items-center justify-between"
-              >
-                <span>👤 Customer Demo</span>
-                <span className="text-[10px] bg-gold-500 text-navy-900 px-1.5 py-0.5 rounded font-bold">Fill</span>
-              </button>
-              <button
-                type="button"
-                onClick={fillDemoAdmin}
-                className="w-full bg-navy-900 hover:bg-navy-800 text-ivory-50 font-semibold py-2 px-3 rounded-xl border border-navy-700 text-left transition-colors flex items-center justify-between"
-              >
-                <span>🛡️ Admin CRM Demo</span>
-                <span className="text-[10px] bg-gold-500 text-navy-900 px-1.5 py-0.5 rounded font-bold">Fill</span>
-              </button>
-            </div>
-          </div>
-
           {error && (
             <div className="bg-danger-500/10 text-danger-500 text-xs font-semibold p-3 rounded-xl border border-danger-500/20 text-center">
               {error}
@@ -123,7 +108,7 @@ export default function LoginPage() {
                   type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="customer@ojaswi.com or +91 98..."
+                  placeholder="your.email@example.com"
                   className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
                 />
               </div>
