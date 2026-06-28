@@ -58,14 +58,12 @@ export const Navbar: React.FC = () => {
           {/* Desktop Navigation Links */}
           <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-navy-900">
             <Link href="/" className="hover:text-gold-500 transition-colors">Home</Link>
-            <Link href="/about" className="hover:text-gold-500 transition-colors">About Us</Link>
+            <Link href="/about" className="hover:text-gold-500 transition-colors">About</Link>
             <Link href="/services" className="hover:text-gold-500 transition-colors">Services</Link>
-            <Link href="/packages" className="hover:text-gold-500 transition-colors font-semibold flex items-center gap-1">
-              Packages <span className="w-2 h-2 rounded-full bg-gold-500 animate-ping" />
-            </Link>
+            <Link href="/packages" className="hover:text-gold-500 transition-colors">Packages</Link>
             <Link href="/our-work" className="hover:text-gold-500 transition-colors">Our Work</Link>
             <Link href="/reviews" className="hover:text-gold-500 transition-colors">Reviews</Link>
-            <Link href="/amc" className="hover:text-gold-500 transition-colors">AMC Offer</Link>
+            <Link href="/amc" className="hover:text-gold-500 transition-colors">AMC</Link>
             <Link href="/contact" className="hover:text-gold-500 transition-colors">Contact</Link>
           </div>
 
@@ -133,13 +131,13 @@ export const Navbar: React.FC = () => {
         {mobileMenuOpen && (
           <div className="lg:hidden mt-3 pt-3 border-t border-navy-900/10 flex flex-col gap-3 pb-3 text-base font-medium text-navy-900">
             <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Home</Link>
-            <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">About Us</Link>
+            <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">About</Link>
             <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Services</Link>
-            <Link href="/packages" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1 font-semibold text-gold-500">Packages & Pricing</Link>
-            <Link href="/our-work" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Our Work (Portfolio)</Link>
-            <Link href="/reviews" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Client Reviews</Link>
-            <Link href="/amc" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">AMC Special Offer</Link>
-            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Contact Us</Link>
+            <Link href="/packages" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Packages</Link>
+            <Link href="/our-work" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Our Work</Link>
+            <Link href="/reviews" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Reviews</Link>
+            <Link href="/amc" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">AMC</Link>
+            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Contact</Link>
 
             <div className="pt-3 border-t border-navy-900/10 flex flex-col gap-2">
               {user ? (
