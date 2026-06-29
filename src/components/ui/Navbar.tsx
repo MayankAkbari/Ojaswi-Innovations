@@ -43,8 +43,8 @@ export const Navbar: React.FC = () => {
         </div>
       )}
 
-      {/* Header Container with Logo Outside & Floating Pill Nav */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-2 flex flex-col lg:flex-row items-center justify-between gap-3">
+      {/* Header Container with Logo Near Nav Bar & Centered Nav */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-3 pb-2 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-8">
         {/* Logo OUTSIDE Navigation Bar */}
         <Link href="/" className="flex items-center shrink-0 group">
           <img
