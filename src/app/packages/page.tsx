@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { PricingCard } from '@/components/ui/PricingCard';
+import { AndroidPhoneMockup } from '@/components/ui/AndroidPhoneMockup';
 import { Sparkles, Check, X, ShieldCheck, Zap, Smartphone, Layers, Rocket, Bell, ArrowRight } from 'lucide-react';
 
 export default function PackagesPage() {
@@ -190,7 +191,7 @@ export default function PackagesPage() {
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-radial-gradient from-gold-500/15 to-transparent blur-3xl pointer-events-none" />
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8 space-y-6 text-center lg:text-left">
+            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 bg-gold-500 text-navy-900 font-extrabold px-3.5 py-1.5 rounded-full text-xs uppercase tracking-wider shadow-lg animate-bounce">
                 <Rocket className="w-4 h-4 fill-current" /> Next-Gen Expansion &bull; Coming Soon
               </div>
@@ -218,24 +219,21 @@ export default function PackagesPage() {
                   <div className="text-xs text-slate-400 mt-0.5">End-to-end publishing & security compliance</div>
                 </div>
               </div>
+
+              <div className="pt-4 flex justify-center lg:justify-start">
+                <a
+                  href="https://wa.me/917069424393?text=Hello%20Ojaswi%20Innovations%2C%20I%20am%20interested%20in%20Early%20VIP%20Access%20for%20your%20upcoming%20Android%20App%20Development%20service."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto btn-gold py-4 px-8 rounded-2xl font-bold text-sm shadow-xl flex items-center justify-center gap-2 hover:scale-105 transition-transform"
+                >
+                  <Bell className="w-4 h-4 animate-pulse" /> Get Early VIP Access on WhatsApp <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col items-center justify-center bg-white/5 border border-gold-500/30 rounded-3xl p-8 text-center backdrop-blur-md shadow-xl">
-              <div className="w-16 h-16 rounded-2xl bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-gold-400 mb-4 shadow-inner">
-                <Bell className="w-8 h-8 animate-pulse" />
-              </div>
-              <h3 className="text-xl font-display font-bold text-ivory-50">Get Early VIP Access</h3>
-              <p className="text-xs text-slate-300 mt-2 mb-6">
-                Be the first to know when our Android App Packages drop. Existing clients get a flat 30% early-bird discount.
-              </p>
-              <a
-                href="https://wa.me/917069424393?text=Hello%20Ojaswi%20Innovations%2C%20I%20am%20interested%20in%20Early%20VIP%20Access%20for%20your%20upcoming%20Android%20App%20Development%20service."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full btn-gold py-3.5 px-6 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 hover:scale-105 transition-transform"
-              >
-                Notify Me on WhatsApp <ArrowRight className="w-4 h-4" />
-              </a>
+            <div className="lg:col-span-5 flex justify-center py-4">
+              <AndroidPhoneMockup />
             </div>
           </div>
         </div>

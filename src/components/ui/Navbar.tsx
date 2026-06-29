@@ -43,67 +43,52 @@ export const Navbar: React.FC = () => {
         </div>
       )}
 
-      {/* Glass Navigation Bar */}
-      <nav className="glass-panel border-b border-white/20 px-4 sm:px-6 lg:px-8 py-3 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      {/* Floating Rounded Navigation Bar */}
+      <div className="px-3 sm:px-6 pt-3 pb-1">
+        <nav className="max-w-7xl mx-auto bg-white/95 border border-slate-200/90 shadow-2xl rounded-3xl sm:rounded-full px-5 sm:px-8 py-2 sm:py-3 backdrop-blur-xl transition-all flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center shrink-0 group py-1">
             <img
-              src="/logo.png"
+              src="/logo-doc.png"
               alt="Ojaswi Innovations Logo"
-              className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-14 sm:h-16 md:h-18 lg:h-20 w-auto max-w-[220px] sm:max-w-[280px] object-contain transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-navy-900">
-            <Link href="/" className="hover:text-gold-500 transition-colors">Home</Link>
-            <Link href="/about" className="hover:text-gold-500 transition-colors">About</Link>
-            <Link href="/services" className="hover:text-gold-500 transition-colors">Services</Link>
-            <Link href="/packages" className="hover:text-gold-500 transition-colors">Packages</Link>
-            <Link href="/our-work" className="hover:text-gold-500 transition-colors">Our Work</Link>
-            <Link href="/reviews" className="hover:text-gold-500 transition-colors">Reviews</Link>
-            <Link href="/amc" className="hover:text-gold-500 transition-colors">AMC</Link>
-            <Link href="/contact" className="hover:text-gold-500 transition-colors">Contact</Link>
-          </div>
-
-          {/* Actions & User State */}
-          <div className="hidden lg:flex items-center gap-4">
+          {/* Desktop Navigation Links (Pages Names Only) */}
+          <div className="hidden lg:flex flex-wrap items-center justify-end gap-5 xl:gap-7 text-sm font-bold text-navy-900">
+            <Link href="/" className="hover:text-gold-600 transition-colors">Home</Link>
+            <Link href="/about" className="hover:text-gold-600 transition-colors">About</Link>
+            <Link href="/services" className="hover:text-gold-600 transition-colors">Services</Link>
+            <Link href="/packages" className="hover:text-gold-600 transition-colors">Packages</Link>
+            <Link href="/our-work" className="hover:text-gold-600 transition-colors">Our Work</Link>
+            <Link href="/reviews" className="hover:text-gold-600 transition-colors">Reviews</Link>
+            <Link href="/amc" className="hover:text-gold-600 transition-colors">AMC</Link>
+            <Link href="/contact" className="hover:text-gold-600 transition-colors">Contact</Link>
             {user ? (
-              <div className="flex items-center gap-3 pl-4 border-l border-navy-900/10">
+              <div className="flex items-center gap-2 pl-3 border-l-2 border-slate-200">
                 <Link
                   href={isAdminRole ? "/admin" : "/dashboard"}
-                  className="flex items-center gap-2 bg-navy-900 text-ivory-50 px-4 py-2 rounded-lg text-sm font-medium hover:bg-navy-800 transition-colors shadow-sm"
+                  className="text-gold-600 hover:text-navy-900 underline decoration-gold-500 font-extrabold flex items-center gap-1"
                 >
-                  <User className="w-4 h-4 text-gold-400" />
-                  <span>{user.fullName.split(' ')[0]}</span>
-                  <span className="text-[10px] uppercase bg-gold-500 text-navy-900 px-1.5 py-0.5 rounded font-bold">
-                    {user.role}
-                  </span>
+                  <User className="w-3.5 h-3.5" />
+                  <span>{isAdminRole ? 'Admin' : 'Dashboard'}</span>
                 </Link>
                 <button
                   onClick={logout}
-                  className="p-2 text-slate-400 hover:text-danger-500 transition-colors rounded-lg hover:bg-danger-500/10"
+                  className="p-1 text-slate-400 hover:text-danger-500 transition-colors"
                   title="Logout"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
-                <Link
-                  href="/login"
-                  className="text-sm font-medium text-navy-900 hover:text-gold-500 px-3 py-2 transition-colors"
-                >
-                  Client Login
-                </Link>
-                <Link
-                  href="/packages"
-                  className="btn-gold px-5 py-2.5 rounded-lg text-sm shadow-md flex items-center gap-1.5"
-                >
-                  <Sparkles className="w-4 h-4" /> Get Free Proposal
-                </Link>
-              </div>
+              <Link
+                href="/login"
+                className="pl-3 border-l-2 border-slate-200 text-slate-600 hover:text-gold-600 font-extrabold"
+              >
+                Login
+              </Link>
             )}
           </div>
 
@@ -112,72 +97,63 @@ export const Navbar: React.FC = () => {
             {user && (
               <Link
                 href={isAdminRole ? "/admin" : "/dashboard"}
-                className="text-xs bg-navy-900 text-gold-300 px-2.5 py-1.5 rounded-md font-semibold flex items-center gap-1"
+                className="text-xs bg-navy-900 text-gold-300 px-3 py-1.5 rounded-full font-semibold flex items-center gap-1 shadow-sm"
               >
                 <User className="w-3 h-3" /> {user.role}
               </Link>
             )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-navy-900 hover:text-gold-500 transition-colors"
+              className="p-2 text-navy-900 hover:text-gold-600 transition-colors rounded-full bg-slate-100 shadow-sm"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
-        </div>
+        </nav>
 
         {/* Mobile Dropdown Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden mt-3 pt-3 border-t border-navy-900/10 flex flex-col gap-3 pb-3 text-base font-medium text-navy-900">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Home</Link>
-            <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">About</Link>
-            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Services</Link>
-            <Link href="/packages" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Packages</Link>
-            <Link href="/our-work" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Our Work</Link>
-            <Link href="/reviews" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Reviews</Link>
-            <Link href="/amc" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">AMC</Link>
-            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-500 py-1">Contact</Link>
+          <div className="max-w-7xl mx-auto mt-2 bg-white/95 border border-slate-200 shadow-2xl rounded-3xl p-5 backdrop-blur-xl flex flex-col gap-3 text-base font-medium text-navy-900 lg:hidden animate-fade-in">
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Home</Link>
+            <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">About</Link>
+            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Services</Link>
+            <Link href="/packages" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Packages</Link>
+            <Link href="/our-work" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Our Work</Link>
+            <Link href="/reviews" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Reviews</Link>
+            <Link href="/amc" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">AMC</Link>
+            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Contact</Link>
 
-            <div className="pt-3 border-t border-navy-900/10 flex flex-col gap-2">
+            <div className="pt-3 border-t border-slate-200 flex flex-col gap-2">
               {user ? (
                 <>
                   <Link
                     href={isAdminRole ? "/admin" : "/dashboard"}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center bg-navy-900 text-ivory-50 py-2 rounded-lg text-sm font-semibold"
+                    className="w-full text-center bg-navy-900 text-ivory-50 py-2.5 rounded-xl text-sm font-bold shadow"
                   >
                     Open {isAdminRole ? 'Admin Portal' : 'Client Dashboard'}
                   </Link>
                   <button
                     onClick={() => { logout(); setMobileMenuOpen(false); }}
-                    className="w-full text-center text-danger-500 py-1 text-sm font-medium hover:underline flex items-center justify-center gap-1"
+                    className="w-full text-center text-danger-500 py-1.5 text-sm font-bold hover:underline flex items-center justify-center gap-1"
                   >
                     <LogOut className="w-4 h-4" /> Logout
                   </button>
                 </>
               ) : (
-                <>
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center border border-navy-900 text-navy-900 py-2 rounded-lg text-sm font-semibold"
-                  >
-                    Client Login / Register
-                  </Link>
-                  <Link
-                    href="/packages"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center btn-gold py-2.5 rounded-lg text-sm font-semibold"
-                  >
-                    Get Free Proposal
-                  </Link>
-                </>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center bg-navy-900 text-ivory-50 py-2.5 rounded-xl text-sm font-bold shadow"
+                >
+                  Client Login
+                </Link>
               )}
             </div>
           </div>
         )}
-      </nav>
+      </div>
     </header>
   );
 };

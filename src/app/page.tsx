@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { PricingCard } from '@/components/ui/PricingCard';
+import { AndroidPhoneMockup } from '@/components/ui/AndroidPhoneMockup';
 import { Sparkles, ArrowRight, ShieldCheck, Zap, Clock, Award, Phone, CheckCircle2, Star, AlertCircle, Smartphone, Layers, Rocket, Bell } from 'lucide-react';
 
 export default function HomePage() {
@@ -259,8 +260,8 @@ export default function HomePage() {
           <div className="absolute top-0 right-1/4 w-80 h-80 bg-gold-500/15 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700 pointer-events-none animate-pulse" />
           <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8 text-center lg:text-left">
-            <div className="space-y-4 max-w-2xl">
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 bg-gold-500 text-navy-900 font-extrabold px-3.5 py-1 rounded-full text-xs uppercase tracking-wider shadow-md animate-bounce">
                 <Rocket className="w-3.5 h-3.5 fill-current" /> Coming Soon &bull; Expansion Announcement
               </div>
@@ -276,23 +277,27 @@ export default function HomePage() {
                 <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 shadow-sm"><Layers className="w-4 h-4 text-gold-400" /> Live CRM Sync</span>
                 <span className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 shadow-sm"><CheckCircle2 className="w-4 h-4 text-gold-400" /> Play Store Ready</span>
               </div>
+
+              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                <Link
+                  href="/packages"
+                  className="w-full sm:w-auto btn-gold px-8 py-4 rounded-2xl font-bold text-sm shadow-xl flex items-center justify-center gap-2 hover:scale-105 transition-all"
+                >
+                  <Sparkles className="w-4 h-4 fill-current" /> Explore App Tier Preview
+                </Link>
+                <a
+                  href="https://wa.me/917069424393?text=Hello%20Ojaswi%20Innovations%2C%20I%20want%20to%20join%20the%20waitlist%20for%20your%20Android%20App%20Development%20service."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-ivory-50 border border-gold-500/40 px-6 py-4 rounded-2xl font-semibold text-sm transition-all flex items-center justify-center gap-2 backdrop-blur-sm shadow-md"
+                >
+                  <Bell className="w-4 h-4 text-gold-400 animate-pulse" /> Join Waitlist
+                </a>
+              </div>
             </div>
 
-            <div className="shrink-0 w-full sm:w-auto flex flex-col sm:flex-row items-center gap-4">
-              <Link
-                href="/packages"
-                className="w-full sm:w-auto btn-gold px-8 py-4 rounded-2xl font-bold text-sm shadow-xl flex items-center justify-center gap-2 hover:scale-105 transition-all"
-              >
-                <Sparkles className="w-4 h-4 fill-current" /> Explore App Tier Preview
-              </Link>
-              <a
-                href="https://wa.me/917069424393?text=Hello%20Ojaswi%20Innovations%2C%20I%20want%20to%20join%20the%20waitlist%20for%20your%20Android%20App%20Development%20service."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-ivory-50 border border-gold-500/40 px-6 py-4 rounded-2xl font-semibold text-sm transition-all flex items-center justify-center gap-2 backdrop-blur-sm shadow-md"
-              >
-                <Bell className="w-4 h-4 text-gold-400 animate-pulse" /> Join Waitlist
-              </a>
+            <div className="lg:col-span-5 flex justify-center py-4">
+              <AndroidPhoneMockup />
             </div>
           </div>
         </div>
