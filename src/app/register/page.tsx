@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/lib/supabase';
-import { Sparkles, ArrowRight, Lock, Mail, Phone, User, ShieldCheck, MapPin } from 'lucide-react';
+import { Sparkles, ArrowRight, Lock, Mail, Phone, User, ShieldCheck, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function RegisterPage() {
   const { login } = useAuth();
@@ -21,6 +21,7 @@ export default function RegisterPage() {
   
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,17 +87,8 @@ export default function RegisterPage() {
         console.error('Error saving profile to backend:', dbError);
       }
 
-      // Automatically log the user in
-      login(cleanEmail, 'CUSTOMER', {
-        id: data?.user?.id,
-        fullName,
-        phone: cleanPhone,
-        addressLine1: address,
-        city,
-        state,
-        pincode
-      });
-      router.push('/');
+      // Mandatory email verification required: display confirmation prompt
+      setVerificationSent(true);
     } catch (err: any) {
       setError(err.message || 'Failed to complete registration.');
     } finally {
@@ -134,13 +126,36 @@ export default function RegisterPage() {
 
       {/* Right Registration Panel */}
       <div className="flex items-center justify-center p-6 sm:p-12 bg-ivory-50 text-navy-900 order-1 lg:order-2">
-        <div className="w-full max-w-md space-y-6 bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-200">
-          <div className="text-center">
-            <h2 className="text-2xl sm:text-3xl font-display font-bold text-navy-900">Create Client Account</h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Step into India&apos;s most luxurious web development portal
+        {verificationSent ? (
+          <div className="w-full max-w-md space-y-6 bg-white p-8 rounded-3xl shadow-2xl border border-gold-500/40 text-center animate-fade-in">
+            <div className="w-20 h-20 rounded-full bg-success-500/20 border-2 border-success-500/50 text-success-600 flex items-center justify-center mx-auto shadow-inner">
+              <CheckCircle2 className="w-10 h-10 animate-bounce" />
+            </div>
+            <h2 className="text-3xl font-display font-bold text-navy-900">Verify Your Email</h2>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              We have sent a mandatory verification link and code to <strong className="text-navy-900 font-semibold">{email}</strong>. Please check your inbox (and spam folder) to verify your account before logging in.
             </p>
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-left text-xs text-amber-800 space-y-1.5">
+              <div className="font-bold flex items-center gap-1.5"><AlertCircle className="w-4 h-4 text-amber-600 shrink-0" /> Mandatory Requirement:</div>
+              <p>Your account access is restricted until email verification is completed via Supabase authentication.</p>
+            </div>
+            <div className="pt-4">
+              <Link
+                href="/login"
+                className="w-full btn-gold py-3.5 rounded-xl font-bold text-sm shadow-md flex items-center justify-center gap-2 hover:scale-105 transition-all block"
+              >
+                Proceed to Client Login <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
+        ) : (
+          <div className="w-full max-w-md space-y-6 bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-200">
+            <div className="text-center">
+              <h2 className="text-2xl sm:text-3xl font-display font-bold text-navy-900">Create Client Account</h2>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                Step into India&apos;s most luxurious web development portal
+              </p>
+            </div>
 
           {error && (
             <div className="bg-danger-500/10 text-danger-500 text-xs font-semibold p-3 rounded-xl border border-danger-500/20 text-center">
@@ -267,6 +282,7 @@ export default function RegisterPage() {
             </Link>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

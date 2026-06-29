@@ -28,8 +28,22 @@ export default function LoginPage() {
     const cleanEmail = email.trim().toLowerCase();
 
     try {
-      // 1. Check credentials against Supabase backend user_profiles table entry
-      const { data: profile, error: dbError } = await supabase
+      // Check credentials against Supabase auth first to verify email confirmation status
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password,
+      });
+
+      if (authError) {
+        if (authError.message.toLowerCase().includes('email not confirmed')) {
+          setError('Mandatory Verification Required: Please check your email inbox (or spam folder) for the confirmation link before logging in.');
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Check credentials against Supabase backend user_profiles table entry
+      const { data: profile } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('email', cleanEmail)
@@ -41,12 +55,6 @@ export default function LoginPage() {
         router.push('/?error=invalid_credentials');
         return;
       }
-
-      // Also attempt to sync session with Supabase auth silently
-      await supabase.auth.signInWithPassword({
-        email: cleanEmail,
-        password,
-      });
 
       const isAdmin = cleanEmail === 'm.akbari2808@gmail.com' || profile.role === 'ADMIN';
 
@@ -61,8 +69,8 @@ export default function LoginPage() {
       });
 
       router.push(isAdmin ? '/admin' : '/dashboard');
-    } catch (err) {
-      router.push('/?error=invalid_credentials');
+    } catch (err: any) {
+      setError('Invalid credentials or login failed.');
     } finally {
       setLoading(false);
     }

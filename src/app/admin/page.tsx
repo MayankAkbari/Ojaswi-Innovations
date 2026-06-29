@@ -157,6 +157,12 @@ export default function AdminPortalPage() {
           >
             ⭐ Reviews ({reviews.filter(r => r.status === 'PENDING').length})
           </button>
+          <Link
+            href="/admin/users"
+            className="px-4 py-2 rounded-xl transition-all bg-navy-950 text-gold-400 hover:bg-gold-500 hover:text-navy-900 border border-gold-500/30 flex items-center gap-1.5 shadow-sm"
+          >
+            👥 Registered Users <span className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
+          </Link>
         </div>
       </div>
 
