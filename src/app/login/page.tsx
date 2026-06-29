@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { ShieldCheck, Sparkles, ArrowRight, Lock, Mail, UserCheck } from 'lucide-react';
+import { ShieldCheck, Sparkles, ArrowRight, Lock, Mail } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export default function LoginPage() {
@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,29 +22,49 @@ export default function LoginPage() {
       return;
     }
     setError('');
+    setLoading(true);
 
-    if (email.trim().toLowerCase() === 'm.akbari2808@gmail.com') {
-      if (password !== 'Mayank@A_2808') {
-        setError('Invalid password for Admin login.');
+    const cleanEmail = email.trim().toLowerCase();
+
+    try {
+      // 1. Check credentials against Supabase backend user_profiles table entry
+      const { data: profile, error: dbError } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('email', cleanEmail)
+        .single();
+
+      // If sign in credentials not stored in supabase backend or password does not match
+      if (!profile || profile.password !== password) {
+        // Strictly restrict user and send to home page with invalid credentials error
+        router.push('/?error=invalid_credentials');
         return;
       }
-      login(email, 'ADMIN');
-      router.push('/admin');
-      return;
+
+      // Also attempt to sync session with Supabase auth silently
+      await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password,
+      });
+
+      const isAdmin = cleanEmail === 'm.akbari2808@gmail.com' || profile.role === 'ADMIN';
+
+      login(cleanEmail, isAdmin ? 'ADMIN' : 'CUSTOMER', {
+        id: profile.id,
+        fullName: profile.full_name,
+        phone: profile.phone,
+        addressLine1: profile.address,
+        city: profile.city,
+        state: profile.state,
+        pincode: profile.pincode
+      });
+
+      router.push(isAdmin ? '/admin' : '/dashboard');
+    } catch (err) {
+      router.push('/?error=invalid_credentials');
+    } finally {
+      setLoading(false);
     }
-
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (signInError && password.length < 6) {
-      setError(signInError.message || 'Invalid login credentials.');
-      return;
-    }
-
-    login(email, 'CUSTOMER');
-    router.push('/dashboard');
   };
 
   return (
@@ -100,12 +121,13 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                Email / Phone Number
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                 <input
-                  type="text"
+                  type="email"
+                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your.email@example.com"
@@ -122,6 +144,7 @@ export default function LoginPage() {
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                 <input
                   type="password"
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
@@ -132,9 +155,10 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full btn-gold py-3.5 px-4 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 mt-2"
+              disabled={loading}
+              className="w-full btn-gold py-3.5 px-4 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 mt-2 disabled:opacity-50 transition-all"
             >
-              Sign In to Enterprise Portal <ArrowRight className="w-4 h-4" />
+              {loading ? 'Checking Credentials...' : 'Sign In to Enterprise Portal'} <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 

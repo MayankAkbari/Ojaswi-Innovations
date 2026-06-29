@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/lib/supabase';
-import { Sparkles, ArrowRight, Lock, Mail, Phone, User, ShieldCheck } from 'lucide-react';
+import { Sparkles, ArrowRight, Lock, Mail, Phone, User, ShieldCheck, MapPin } from 'lucide-react';
 
 export default function RegisterPage() {
   const { login } = useAuth();
@@ -14,6 +14,11 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [pincode, setPincode] = useState('');
+  
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
@@ -21,16 +26,33 @@ export default function RegisterPage() {
 
   const handleInitiateEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !email || !phone || !password) {
-      setError('Please complete all required fields.');
+    if (!fullName || !email || !phone || !password || !address || !city || !state || !pincode) {
+      setError('Please complete all required fields including address details.');
       return;
     }
     setError('');
     setLoading(true);
 
     try {
+      // 1. Store credentials, contact details and address to Supabase backend table user_profiles
+      const { error: dbError } = await supabase.from('user_profiles').upsert({
+        email: email.trim().toLowerCase(),
+        password: password,
+        full_name: fullName,
+        phone: phone,
+        address: address,
+        city: city,
+        state: state,
+        pincode: pincode
+      }, { onConflict: 'email' });
+
+      if (dbError) {
+        console.error('Error saving profile to backend:', dbError);
+      }
+
+      // 2. Initiate Supabase Auth
       const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
+        email: email.trim().toLowerCase(),
         password,
         options: {
           data: {
@@ -41,22 +63,27 @@ export default function RegisterPage() {
         }
       });
 
-      if (signUpError) {
+      if (signUpError && !signUpError.message.includes('already registered')) {
         setError(signUpError.message);
         setLoading(false);
         return;
       }
 
-      if (data.session) {
-        login(email, 'CUSTOMER', {
+      if (data?.session) {
+        login(email.trim().toLowerCase(), 'CUSTOMER', {
           id: data.user?.id,
           fullName,
           phone,
+          addressLine1: address,
+          city,
+          state,
+          pincode
         });
         router.push('/');
         return;
       }
 
+      // If no session returned or user already in auth, proceed to OTP confirmation or direct login
       setOtpSent(true);
     } catch (err: any) {
       setError(err.message || 'Failed to initiate sign up.');
@@ -76,14 +103,21 @@ export default function RegisterPage() {
 
     try {
       const { data, error: verifyError } = await supabase.auth.verifyOtp({
-        email,
+        email: email.trim().toLowerCase(),
         token: otp,
         type: 'signup'
       });
 
       if (verifyError) {
         if (otp === '1234' || otp === '123456') {
-          login(email, 'CUSTOMER', { fullName, phone });
+          login(email.trim().toLowerCase(), 'CUSTOMER', { 
+            fullName, 
+            phone,
+            addressLine1: address,
+            city,
+            state,
+            pincode
+          });
           router.push('/');
           return;
         }
@@ -92,10 +126,14 @@ export default function RegisterPage() {
         return;
       }
 
-      login(email, 'CUSTOMER', {
+      login(email.trim().toLowerCase(), 'CUSTOMER', {
         id: data.user?.id,
         fullName,
-        phone
+        phone,
+        addressLine1: address,
+        city,
+        state,
+        pincode
       });
       router.push('/');
     } catch (err: any) {
@@ -134,10 +172,10 @@ export default function RegisterPage() {
 
       {/* Right Registration Panel */}
       <div className="flex items-center justify-center p-6 sm:p-12 bg-ivory-50 text-navy-900 order-1 lg:order-2">
-        <div className="w-full max-w-md space-y-8 bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200">
+        <div className="w-full max-w-md space-y-6 bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-200">
           <div className="text-center">
             <h2 className="text-2xl sm:text-3xl font-display font-bold text-navy-900">Create Client Account</h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-2">
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
               Step into India&apos;s most luxurious web development portal
             </p>
           </div>
@@ -149,7 +187,7 @@ export default function RegisterPage() {
           )}
 
           {!otpSent ? (
-            <form onSubmit={handleInitiateEmailAuth} className="space-y-4">
+            <form onSubmit={handleInitiateEmailAuth} className="space-y-3">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Full Name</label>
                 <div className="relative">
@@ -160,37 +198,90 @@ export default function RegisterPage() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Rajesh Bhai Patel"
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Email Address</label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="rajesh@example.com"
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
-                  />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Email Address</label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="rajesh@example.com"
+                      className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Phone Number</label>
+                  <div className="relative">
+                    <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                    <input
+                      type="tel"
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+91 98765 43210"
+                      className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
+                    />
+                  </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">WhatsApp / Phone</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Street Address / Building</label>
                 <div className="relative">
-                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                  <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                   <input
-                    type="tel"
+                    type="text"
                     required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 98765 43210"
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Tejomay Tower, 4th Floor"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">City</label>
+                  <input
+                    type="text"
+                    required
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="Ahmedabad"
+                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">State</label>
+                  <input
+                    type="text"
+                    required
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    placeholder="Gujarat"
+                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">PIN Code</label>
+                  <input
+                    type="text"
+                    required
+                    value={pincode}
+                    onChange={(e) => setPincode(e.target.value)}
+                    placeholder="380001"
+                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
                   />
                 </div>
               </div>
@@ -205,7 +296,7 @@ export default function RegisterPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white transition-all"
                   />
                 </div>
               </div>
@@ -215,7 +306,7 @@ export default function RegisterPage() {
                 disabled={loading}
                 className="w-full btn-gold py-3.5 px-4 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 mt-4 disabled:opacity-50 transition-all"
               >
-                {loading ? 'Initiating Auth...' : 'Continue & Verify Email'} <ArrowRight className="w-4 h-4" />
+                {loading ? 'Saving & Initiating Auth...' : 'Save & Verify Email'} <ArrowRight className="w-4 h-4" />
               </button>
             </form>
           ) : (
@@ -223,7 +314,7 @@ export default function RegisterPage() {
               <div className="bg-success-500/10 border border-success-500/30 rounded-2xl p-4 text-center">
                 <div className="text-sm font-bold text-success-500 mb-1">📧 Email Verification Sent</div>
                 <p className="text-xs text-slate-600">
-                  We sent a confirmation code to <strong>{email}</strong>.<br />
+                  We stored your details and sent a confirmation code to <strong>{email}</strong>.<br />
                   <span className="text-navy-900 font-semibold">Enter the code sent to your email (or use demo code 123456).</span>
                 </p>
               </div>
@@ -258,7 +349,7 @@ export default function RegisterPage() {
             </form>
           )}
 
-          <div className="pt-6 border-t border-slate-200 text-center text-xs text-slate-600">
+          <div className="pt-4 border-t border-slate-200 text-center text-xs text-slate-600">
             Already have a client account?{' '}
             <Link href="/login" className="font-bold text-navy-900 hover:text-gold-500 underline decoration-gold-500 transition-colors ml-1">
               Sign In

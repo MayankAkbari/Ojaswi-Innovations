@@ -1,12 +1,23 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { PricingCard } from '@/components/ui/PricingCard';
-import { Sparkles, ArrowRight, ShieldCheck, Zap, Clock, Award, Phone, CheckCircle2, Star } from 'lucide-react';
+import { Sparkles, ArrowRight, ShieldCheck, Zap, Clock, Award, Phone, CheckCircle2, Star, AlertCircle } from 'lucide-react';
 
 export default function HomePage() {
+  const [showAuthError, setShowAuthError] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('error') === 'invalid_credentials') {
+        setShowAuthError(true);
+      }
+    }
+  }, []);
+
   return (
     <div className="space-y-20 sm:space-y-32 pb-24 overflow-hidden">
       
@@ -16,6 +27,21 @@ export default function HomePage() {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-radial-gradient from-gold-500/20 to-transparent blur-3xl pointer-events-none" />
         
         <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6">
+          {showAuthError && (
+            <div className="max-w-2xl mx-auto mb-6 bg-danger-500/90 text-white p-4 rounded-2xl border border-danger-400 shadow-2xl flex items-center justify-between gap-4 animate-fade-in text-left">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-6 h-6 shrink-0 mt-0.5 text-white" />
+                <div>
+                  <div className="font-bold text-base">Invalid Credentials - Access Restricted</div>
+                  <div className="text-xs font-normal text-ivory-100 mt-1">
+                    Your sign-in credentials are not stored in our Supabase backend or did not match. Please register an account with valid credentials first.
+                  </div>
+                </div>
+              </div>
+              <button onClick={() => setShowAuthError(false)} className="text-white font-bold px-2.5 py-1 bg-black/20 rounded-lg hover:bg-black/40 text-sm">✕</button>
+            </div>
+          )}
+
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-navy-800/80 text-gold-300 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold border border-gold-500/40 shadow-lg animate-fade-in">
             <Sparkles className="w-4 h-4 text-gold-400 shrink-0 animate-pulse" />
