@@ -55,38 +55,74 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const fetchAndSyncProfile = async (u: any) => {
+      if (!u || !u.email) return null;
+      const cleanEmail = u.email.trim().toLowerCase();
+      const meta = u.user_metadata || {};
+
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('email', cleanEmail)
+        .maybeSingle();
+
+      if (!profile) {
+        const newProfile = {
+          email: cleanEmail,
+          full_name: meta.full_name || u.email.split('@')[0] || 'Valued Client',
+          phone: meta.phone || '+91 98000 00000',
+          address: meta.address || 'Not Provided',
+          city: meta.city || 'Ahmedabad',
+          state: meta.state || 'Gujarat',
+          pincode: meta.pincode || '380001',
+          password: 'OAUTH_USER'
+        };
+        await supabase.from('user_profiles').insert(newProfile);
+        return newProfile;
+      }
+      return profile;
+    };
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
         const u = session.user;
         const meta = u.user_metadata || {};
-        setUser((prev) => prev || {
+        const profile = await fetchAndSyncProfile(u);
+        const newUser: AuthUser = {
           id: u.id,
-          fullName: meta.full_name || u.email?.split('@')[0] || 'Valued Client',
+          fullName: profile?.full_name || meta.full_name || u.email?.split('@')[0] || 'Valued Client',
           email: u.email || '',
-          phone: meta.phone || '+91 98000 00000',
+          phone: profile?.phone || meta.phone || '+91 98000 00000',
           role: (meta.role as AuthUser['role']) || 'CUSTOMER',
-          city: 'Ahmedabad',
-          state: 'Gujarat'
-        });
+          addressLine1: profile?.address || meta.address,
+          city: profile?.city || meta.city || 'Ahmedabad',
+          state: profile?.state || meta.state || 'Gujarat',
+          pincode: profile?.pincode || meta.pincode
+        };
+        setUser(newUser);
+        localStorage.setItem('ojaswi_session', JSON.stringify(newUser));
       }
       setIsLoading(false);
     });
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
         localStorage.removeItem('ojaswi_session');
       } else if (session?.user && event === 'SIGNED_IN') {
         const u = session.user;
         const meta = u.user_metadata || {};
+        const profile = await fetchAndSyncProfile(u);
         const newUser: AuthUser = {
           id: u.id,
-          fullName: meta.full_name || u.email?.split('@')[0] || 'Valued Client',
+          fullName: profile?.full_name || meta.full_name || u.email?.split('@')[0] || 'Valued Client',
           email: u.email || '',
-          phone: meta.phone || '+91 98000 00000',
+          phone: profile?.phone || meta.phone || '+91 98000 00000',
           role: (meta.role as AuthUser['role']) || 'CUSTOMER',
-          city: 'Ahmedabad',
-          state: 'Gujarat'
+          addressLine1: profile?.address || meta.address,
+          city: profile?.city || meta.city || 'Ahmedabad',
+          state: profile?.state || meta.state || 'Gujarat',
+          pincode: profile?.pincode || meta.pincode
         };
         setUser(newUser);
         localStorage.setItem('ojaswi_session', JSON.stringify(newUser));

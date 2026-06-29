@@ -24,6 +24,24 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const handleGoogleAuth = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (oauthError) setError(oauthError.message);
+    } catch (err: any) {
+      setError(err.message || 'Failed to initiate Google authentication.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleInitiateEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !email || !phone || !password || !address || !city || !state || !pincode) {
@@ -34,30 +52,38 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      // 1. Store credentials, contact details and address to Supabase backend table user_profiles
-      const { error: dbError } = await supabase.from('user_profiles').upsert({
-        email: email.trim().toLowerCase(),
-        password: password,
-        full_name: fullName,
-        phone: phone,
-        address: address,
-        city: city,
-        state: state,
-        pincode: pincode
-      }, { onConflict: 'email' });
+      const cleanEmail = email.trim().toLowerCase();
+      const cleanPhone = phone.trim();
 
-      if (dbError) {
-        console.error('Error saving profile to backend:', dbError);
+      // Check if verified profile already exists in Supabase backend table user_profiles
+      const { data: existingProfiles } = await supabase
+        .from('user_profiles')
+        .select('email, phone')
+        .or(`email.eq.${cleanEmail},phone.eq.${cleanPhone}`);
+
+      if (existingProfiles && existingProfiles.length > 0) {
+        const matchingEmail = existingProfiles.some(p => p.email.toLowerCase() === cleanEmail);
+        if (matchingEmail) {
+          setError('An account with this email address already exists and is verified. Please Sign In instead.');
+        } else {
+          setError('An account with this phone number already exists and is verified. Please Sign In instead.');
+        }
+        setLoading(false);
+        return;
       }
 
-      // 2. Initiate Supabase Auth
+      // Initiate Supabase Auth without inserting to database before email verification
       const { data, error: signUpError } = await supabase.auth.signUp({
-        email: email.trim().toLowerCase(),
+        email: cleanEmail,
         password,
         options: {
           data: {
             full_name: fullName,
-            phone: phone,
+            phone: cleanPhone,
+            address: address,
+            city: city,
+            state: state,
+            pincode: pincode,
             role: 'CUSTOMER'
           }
         }
@@ -70,10 +96,23 @@ export default function RegisterPage() {
       }
 
       if (data?.session) {
-        login(email.trim().toLowerCase(), 'CUSTOMER', {
+        // If auto-confirmed
+        await supabase.from('user_profiles').upsert({
+          id: data.user?.id,
+          email: cleanEmail,
+          password: password,
+          full_name: fullName,
+          phone: cleanPhone,
+          address: address,
+          city: city,
+          state: state,
+          pincode: pincode
+        }, { onConflict: 'email' });
+
+        login(cleanEmail, 'CUSTOMER', {
           id: data.user?.id,
           fullName,
-          phone,
+          phone: cleanPhone,
           addressLine1: address,
           city,
           state,
@@ -83,7 +122,6 @@ export default function RegisterPage() {
         return;
       }
 
-      // If no session returned or user already in auth, proceed to OTP confirmation or direct login
       setOtpSent(true);
     } catch (err: any) {
       setError(err.message || 'Failed to initiate sign up.');
@@ -95,35 +133,49 @@ export default function RegisterPage() {
   const handleVerifyAndRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!otp && otpSent) {
-      setError('Please enter the security code sent to your email.');
+      setError('Please enter the verification code or token sent to your email.');
       return;
     }
     setError('');
     setLoading(true);
 
     try {
+      let cleanToken = otp.trim();
+      if (cleanToken.includes('token=')) {
+        const match = cleanToken.match(/token=([^&]+)/);
+        if (match) cleanToken = match[1];
+      } else if (cleanToken.includes('#access_token=')) {
+        const match = cleanToken.match(/access_token=([^&]+)/);
+        if (match) cleanToken = match[1];
+      }
+
       const { data, error: verifyError } = await supabase.auth.verifyOtp({
         email: email.trim().toLowerCase(),
-        token: otp,
+        token: cleanToken,
         type: 'signup'
       });
 
       if (verifyError) {
-        if (otp === '1234' || otp === '123456') {
-          login(email.trim().toLowerCase(), 'CUSTOMER', { 
-            fullName, 
-            phone,
-            addressLine1: address,
-            city,
-            state,
-            pincode
-          });
-          router.push('/');
-          return;
-        }
         setError(verifyError.message);
         setLoading(false);
         return;
+      }
+
+      // Store user profile in backend database only after successful email verification
+      const { error: dbError } = await supabase.from('user_profiles').upsert({
+        id: data.user?.id,
+        email: email.trim().toLowerCase(),
+        password: password,
+        full_name: fullName,
+        phone: phone.trim(),
+        address: address,
+        city: city,
+        state: state,
+        pincode: pincode
+      }, { onConflict: 'email' });
+
+      if (dbError) {
+        console.error('Error saving profile to backend:', dbError);
       }
 
       login(email.trim().toLowerCase(), 'CUSTOMER', {
@@ -308,26 +360,49 @@ export default function RegisterPage() {
               >
                 {loading ? 'Saving & Initiating Auth...' : 'Save & Verify Email'} <ArrowRight className="w-4 h-4" />
               </button>
+
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200"></div>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-3 text-slate-400 font-semibold">Or register with</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleGoogleAuth}
+                disabled={loading}
+                className="w-full py-3 px-4 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-navy-900 font-bold text-sm shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                Continue with Google
+              </button>
             </form>
           ) : (
             <form onSubmit={handleVerifyAndRegister} className="space-y-6">
               <div className="bg-success-500/10 border border-success-500/30 rounded-2xl p-4 text-center">
                 <div className="text-sm font-bold text-success-500 mb-1">📧 Email Verification Sent</div>
                 <p className="text-xs text-slate-600">
-                  We stored your details and sent a confirmation code to <strong>{email}</strong>.<br />
-                  <span className="text-navy-900 font-semibold">Enter the code sent to your email (or use demo code 123456).</span>
+                  We sent a confirmation code/link to <strong>{email}</strong>.<br />
+                  <span className="text-navy-900 font-semibold">Enter the 6-digit code or paste the verification link/token sent to your email.</span>
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2 text-center">Enter Security Code</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2 text-center">Security Code or Verification Token</label>
                 <input
                   type="text"
-                  maxLength={6}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  placeholder="1 2 3 4 5 6"
-                  className="w-56 mx-auto block text-center tracking-widest text-2xl font-extrabold py-3 bg-slate-50 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white"
+                  placeholder="Enter code or paste link/token"
+                  className="w-full px-4 block text-center text-lg font-bold py-3 bg-slate-50 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-gold-500 focus:bg-white"
                 />
               </div>
 
