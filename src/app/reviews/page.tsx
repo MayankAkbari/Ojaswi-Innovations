@@ -1,30 +1,41 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { Sparkles, Star, CheckCircle2, MessageSquare, Send } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export default function ReviewsPage() {
-  const [reviewsList, setReviewsList] = useState([
-    { name: 'Vikram Shah', role: 'Managing Director, Shree Fabrics (Ahmedabad)', rating: 5, text: 'Ojaswi delivered our textile export portal in exactly 44 hours. The custom product inquiry form increased our WhatsApp lead velocity by 300%!', date: 'June 2026', verified: true },
-    { name: 'Meena Mehta', role: 'Founder, Apex Packaging Solutions (Surat)', rating: 5, text: 'The free post-delivery modifications saved us when we had to update our Diwali packaging pricing catalog. Truly lowest AMC in Gujarat!', date: 'May 2026', verified: true },
-    { name: 'Dr. Arvind Patel', role: 'Chief Medical Officer, Aarogya Hospital (Baroda)', rating: 5, text: 'Trivikram package admin portal allows my staff to manage patient appointments effortlessly. Highly recommended!', date: 'June 2026', verified: true },
-    { name: 'Rajesh Bhai Patel', role: 'Owner, Tejomay Tower Retail', rating: 5, text: 'Their engineering discipline is unmatched. No hidden hosting charges, and the website speed is phenomenal.', date: 'April 2026', verified: true },
-    { name: 'Sonal Desai', role: 'Lead Interior Designer, Vogue Spaces', rating: 5, text: 'Our clients are blown away by the luxury glassmorphism theme they created for our portfolio.', date: 'June 2026', verified: true }
-  ]);
-
+  const [reviewsList, setReviewsList] = useState<any[]>([]);
   const [newName, setNewName] = useState('');
   const [newRole, setNewRole] = useState('');
   const [newText, setNewText] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    supabase.from('reviews').select('*').eq('status', 'APPROVED').order('created_at', { ascending: false }).then(({ data }) => {
+      if (data && data.length > 0) {
+        setReviewsList(data);
+      }
+    });
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newName || !newText) return;
-    setReviewsList([
-      { name: newName, role: newRole || 'Verified Client', rating: 5, text: newText, date: 'Just now', verified: false },
-      ...reviewsList
-    ]);
+    try {
+      await supabase.from('reviews').insert({
+        id: `rev-${Date.now()}`,
+        name: newName,
+        role: newRole || 'Verified Client',
+        rating: 5,
+        text: newText,
+        status: 'PENDING',
+        featured: false
+      });
+    } catch {
+      // Ignore client side errors
+    }
     setSubmitted(true);
     setNewName('');
     setNewRole('');
@@ -89,9 +100,9 @@ export default function ReviewsPage() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <div className="flex text-gold-500 gap-1">
-                  {[...Array(rev.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                  {[...Array(rev.rating || 5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
                 </div>
-                <span className="text-xs text-slate-400">{rev.date}</span>
+                <span className="text-xs text-slate-400">{rev.created_at ? new Date(rev.created_at).toLocaleDateString() : (rev.date || 'Recent')}</span>
               </div>
               <p className="text-slate-700 italic text-sm leading-relaxed">&ldquo;{rev.text}&rdquo;</p>
             </div>
@@ -99,13 +110,11 @@ export default function ReviewsPage() {
             <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
               <div>
                 <div className="font-bold text-navy-900 text-sm">{rev.name}</div>
-                <div className="text-xs text-slate-500">{rev.role}</div>
+                <div className="text-xs text-slate-500">{rev.role || 'Verified Client'}</div>
               </div>
-              {rev.verified && (
-                <span className="text-success-500 flex items-center gap-1 text-[10px] font-bold bg-success-500/10 px-2 py-0.5 rounded border border-success-500/20">
-                  <CheckCircle2 className="w-3 h-3" /> Verified
-                </span>
-              )}
+              <span className="text-success-500 flex items-center gap-1 text-[10px] font-bold bg-success-500/10 px-2 py-0.5 rounded border border-success-500/20">
+                <CheckCircle2 className="w-3 h-3" /> Verified
+              </span>
             </div>
           </GlassCard>
         ))}
@@ -120,7 +129,7 @@ export default function ReviewsPage() {
           <div className="bg-success-500/10 border border-success-500/30 p-6 rounded-2xl text-center space-y-2">
             <CheckCircle2 className="w-8 h-8 text-success-500 mx-auto" />
             <div className="font-bold text-navy-900">Thank You For Your Review!</div>
-            <p className="text-xs text-slate-600">Your feedback has been received and added to our moderation queue.</p>
+            <p className="text-xs text-slate-600">Your feedback has been received and added to our admin moderation queue.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">

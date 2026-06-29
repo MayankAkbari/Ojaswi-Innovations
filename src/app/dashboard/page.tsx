@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
+import { supabase } from '@/lib/supabase';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { Sparkles, CheckCircle2, Clock, ShieldCheck, AlertCircle, Phone, FileText, ArrowRight, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
@@ -16,8 +17,23 @@ const STAGES = [
 
 export default function CustomerDashboardPage() {
   const { user } = useAuth();
-  const [currentStage, setCurrentStage] = useState(4); // Demo seeded stage
+  const [currentStage, setCurrentStage] = useState(1);
+  const [trackerNote, setTrackerNote] = useState('');
   const [amcRequested, setAmcRequested] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      supabase.from('project_trackers').select('*').then(({ data }) => {
+        if (data && data.length > 0) {
+          const tr = data.find(t => t.client_name === user.fullName) || data[0];
+          if (tr) {
+            setCurrentStage(tr.stage || 1);
+            setTrackerNote(tr.notes || '');
+          }
+        }
+      });
+    }
+  }, [user]);
 
   if (!user) {
     return null; // AuthGate will redirect
@@ -86,10 +102,10 @@ export default function CustomerDashboardPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
           <div>
             <h2 className="text-2xl font-display font-bold text-navy-900">Live Project Tracker</h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">Real-time status of your custom website build.</p>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">Real-time status of your custom website build powered by Supabase.</p>
           </div>
           <div className="flex items-center gap-2 bg-navy-900 text-gold-300 px-3 py-1.5 rounded-lg text-xs font-bold">
-            <Clock className="w-4 h-4 text-gold-400 animate-spin" /> Stage 4: Client Review Active
+            <Clock className="w-4 h-4 text-gold-400 animate-spin" /> Stage {currentStage}: {STAGES.find(s => s.id === currentStage)?.name || 'In Progress'}
           </div>
         </div>
 
@@ -98,13 +114,11 @@ export default function CustomerDashboardPage() {
           {STAGES.map((s) => {
             const isCompleted = s.id < currentStage;
             const isCurrent = s.id === currentStage;
-            const isPending = s.id > currentStage;
 
             return (
               <div
                 key={s.id}
-                onClick={() => setCurrentStage(s.id)}
-                className={`p-5 rounded-2xl border transition-all cursor-pointer relative ${
+                className={`p-5 rounded-2xl border transition-all relative ${
                   isCurrent
                     ? 'bg-navy-900 text-ivory-50 border-gold-500 shadow-xl scale-105 z-10'
                     : isCompleted
@@ -131,18 +145,18 @@ export default function CustomerDashboardPage() {
           })}
         </div>
 
-        {/* Stage 4 Detailed Action Box */}
+        {/* Stage Detailed Action Box */}
         <div className="bg-navy-900/5 border border-navy-900/10 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="space-y-1 text-center sm:text-left">
             <div className="font-bold text-navy-900 flex items-center justify-center sm:justify-start gap-2">
-              <AlertCircle className="w-5 h-5 text-gold-600" /> Staging Environment Ready for Review
+              <AlertCircle className="w-5 h-5 text-gold-600" /> Project Manager Update
             </div>
             <p className="text-xs sm:text-sm text-slate-600">
-              Your staging homepage and services pages have been deployed. Please review the layout and send any final text modifications on WhatsApp.
+              {trackerNote || 'Your project sprint is actively progressing according to the Tejomay Group SLA timeline.'}
             </p>
           </div>
           <a
-            href="https://wa.me/917069424393?text=Hello%20Team%2C%20I%20have%20reviewed%20Stage%204%20of%20my%20website.%20Here%20are%20my%20final%20notes..."
+            href={`https://wa.me/917069424393?text=${encodeURIComponent(`Hello Team, I am viewing my Stage ${currentStage} update on my dashboard. I have a quick question...`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-gold py-3 px-6 rounded-xl font-bold text-xs sm:text-sm shrink-0 shadow-md"

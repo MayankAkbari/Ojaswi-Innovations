@@ -6,6 +6,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { Sparkles, Download, MessageSquare, Check, Building2, ShieldCheck, Clock, Zap } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { supabase } from '@/lib/supabase';
 
 const PACKAGE_DETAILS: Record<string, { name: string; maxPages: string; prarambhPrice: number; prarambhReg: number; chaturyugPrice: number; chaturyugReg: number; changesMonths: number; support: string }> = {
   someshwar: {
@@ -60,8 +61,24 @@ export default function ProposalGeneratorPage() {
   const regPrice = isChaturyug ? pkg.chaturyugReg : pkg.prarambhReg;
   const durationYears = isChaturyug ? 4 : 1;
 
+  const recordLead = async () => {
+    try {
+      await supabase.from('leads').insert({
+        id: `lead-${Date.now()}`,
+        client_name: clientName || 'Valued Client',
+        company_name: companyName || 'Individual Inquiry',
+        package_name: `${pkg.name} (${isChaturyug ? 'Chaturyug' : 'Prarambh'})`,
+        amount: activePrice,
+        status: 'PENDING'
+      });
+    } catch {
+      // Ignore client side errors
+    }
+  };
+
   // Generate Official PDF Proposal
   const handleDownloadPDF = () => {
+    recordLead();
     const doc = new jsPDF();
     
     // Header styling
@@ -345,6 +362,7 @@ Please send invoice details so we can initiate the 48-hour build!`;
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={recordLead}
                 className="w-full btn-gold py-4 px-4 rounded-xl font-bold text-sm text-center block shadow-xl flex items-center justify-center gap-2"
               >
                 <MessageSquare className="w-4 h-4 fill-current" /> Buy & Send to WhatsApp HQ
