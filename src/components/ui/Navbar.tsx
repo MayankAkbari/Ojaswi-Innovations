@@ -48,7 +48,7 @@ export const Navbar: React.FC = () => {
         {/* Logo OUTSIDE Navigation Bar */}
         <Link href="/" className="flex items-center shrink-0 group">
           <img
-            src="/logo-doc.png"
+            src="/ojaswi-logo-new.png"
             alt="Ojaswi Innovations Logo"
             className="h-16 sm:h-20 md:h-22 lg:h-24 w-auto max-w-[260px] sm:max-w-[320px] object-contain transition-transform duration-300 group-hover:scale-105"
           />

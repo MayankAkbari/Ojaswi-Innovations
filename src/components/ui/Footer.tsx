@@ -14,7 +14,7 @@ export const Footer: React.FC = () => {
           {/* Col 1 & 2: Brand Info */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-3">
-              <img src="/logo-doc.png" alt="Ojaswi Innovations" className="h-14 w-auto object-contain brightness-110" />
+              <img src="/ojaswi-logo-new.png" alt="Ojaswi Innovations" className="h-14 w-auto object-contain brightness-110" />
             </Link>
             <p className="text-gold-300 font-display italic text-lg">
               &ldquo;Guided by Vision. Powered by Innovation.&rdquo;

@@ -82,7 +82,7 @@ export default function LoginPage() {
       <div className="hero-bg p-8 sm:p-12 lg:p-16 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-gold-500/20 relative overflow-hidden">
         <div>
           <Link href="/" className="inline-block mb-10">
-            <img src="/logo-doc.png" alt="Ojaswi Innovations" className="h-16 w-auto object-contain brightness-110" />
+            <img src="/ojaswi-logo-new.png" alt="Ojaswi Innovations" className="h-16 w-auto object-contain brightness-110" />
           </Link>
           <div className="inline-flex items-center gap-2 bg-gold-500/20 text-gold-300 px-3 py-1 rounded-full text-xs font-semibold mb-6 border border-gold-500/30">
             <Sparkles className="w-3.5 h-3.5 text-gold-400" /> Client Portal Gate

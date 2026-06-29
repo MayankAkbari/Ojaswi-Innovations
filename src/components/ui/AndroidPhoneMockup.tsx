@@ -57,7 +57,7 @@ export const AndroidPhoneMockup: React.FC = () => {
           <div className="bg-gradient-to-r from-navy-900 via-charcoal-900 to-navy-800 rounded-xl p-3 border border-gold-500/40 shadow-lg mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 shadow-md">
-                <img src="/logo-doc.png" alt="Ojaswi App" className="w-full h-full object-contain" />
+                <img src="/ojaswi-logo-new.png" alt="Ojaswi App" className="w-full h-full object-contain" />
               </div>
               <div>
                 <div className="text-xs font-black text-ivory-50 flex items-center gap-1">
