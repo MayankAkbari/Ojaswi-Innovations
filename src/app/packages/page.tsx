@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { PricingCard } from '@/components/ui/PricingCard';
-import { Sparkles, Check, X, ShieldCheck, Zap } from 'lucide-react';
+import { Sparkles, Check, X, ShieldCheck, Zap, Smartphone, Layers, Rocket, Bell, ArrowRight } from 'lucide-react';
 
 export default function PackagesPage() {
   const [edition, setEdition] = useState<'prarambh' | 'chaturyug'>('chaturyug');
@@ -179,6 +179,65 @@ export default function PackagesPage() {
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Coming Soon: Android App Development Section */}
+      <div className="pt-12">
+        <div className="relative rounded-3xl bg-gradient-to-br from-navy-900 via-navy-800 to-charcoal-900 text-ivory-50 p-8 sm:p-14 border-2 border-gold-500/60 shadow-2xl overflow-hidden">
+          {/* Animated background glow */}
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-radial-gradient from-gold-500/20 to-transparent blur-3xl pointer-events-none animate-pulse" />
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-radial-gradient from-gold-500/15 to-transparent blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-8 space-y-6 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 bg-gold-500 text-navy-900 font-extrabold px-3.5 py-1.5 rounded-full text-xs uppercase tracking-wider shadow-lg animate-bounce">
+                <Rocket className="w-4 h-4 fill-current" /> Next-Gen Expansion &bull; Coming Soon
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-display font-bold tracking-tight leading-tight">
+                Fully Functional <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500">Android App Development</span>
+              </h2>
+              <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl">
+                We are expanding our engineering excellence to mobile. Soon, you will be able to bundle high-performance native Android applications synchronized seamlessly with your Ojaswi web database and CRM gate.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                  <Smartphone className="w-6 h-6 text-gold-400 mb-2 mx-auto lg:mx-0" />
+                  <div className="font-bold text-sm text-ivory-50">Native Performance</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Silky 120fps fluid UI & offline capabilities</div>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                  <Layers className="w-6 h-6 text-gold-400 mb-2 mx-auto lg:mx-0" />
+                  <div className="font-bold text-sm text-ivory-50">Web & App Sync</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Real-time data parity with your web portal</div>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                  <ShieldCheck className="w-6 h-6 text-gold-400 mb-2 mx-auto lg:mx-0" />
+                  <div className="font-bold text-sm text-ivory-50">Play Store Launch</div>
+                  <div className="text-xs text-slate-400 mt-0.5">End-to-end publishing & security compliance</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 flex flex-col items-center justify-center bg-white/5 border border-gold-500/30 rounded-3xl p-8 text-center backdrop-blur-md shadow-xl">
+              <div className="w-16 h-16 rounded-2xl bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-gold-400 mb-4 shadow-inner">
+                <Bell className="w-8 h-8 animate-pulse" />
+              </div>
+              <h3 className="text-xl font-display font-bold text-ivory-50">Get Early VIP Access</h3>
+              <p className="text-xs text-slate-300 mt-2 mb-6">
+                Be the first to know when our Android App Packages drop. Existing clients get a flat 30% early-bird discount.
+              </p>
+              <a
+                href="https://wa.me/917069424393?text=Hello%20Ojaswi%20Innovations%2C%20I%20am%20interested%20in%20Early%20VIP%20Access%20for%20your%20upcoming%20Android%20App%20Development%20service."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full btn-gold py-3.5 px-6 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 hover:scale-105 transition-transform"
+              >
+                Notify Me on WhatsApp <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 

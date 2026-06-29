@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   title: "Ojaswi Innovations | Guided by Vision. Powered by Innovation.",
   description: "India's fastest-growing premium website development company. 48-Hour delivery, free post-launch changes, and lowest AMC in India (₹5,500/year Independence Day Offer). Flagship of Tejomay Group Pvt Ltd.",
   keywords: "Website Development Company India, Website Developer Ahmedabad, Business Website Development India, Professional Website Development, Ecommerce Website Development, SEO Website Company, Full Stack Website Company, Fast Website Development, Premium Website Designer India",
+  icons: {
+    icon: "/logo-doc.png",
+    shortcut: "/logo-doc.png",
+    apple: "/logo-doc.png",
+  },
   openGraph: {
     title: "Ojaswi Innovations | Premium Enterprise Website Development",
     description: "48-Hour Rapid Delivery. Guaranteed Free Changes. Lowest AMC in India. Built for High ROI & Scalability.",
