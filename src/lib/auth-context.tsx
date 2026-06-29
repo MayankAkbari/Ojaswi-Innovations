@@ -24,9 +24,9 @@ interface AuthContextType {
 }
 
 const ADMIN_USER: AuthUser = {
-  id: 'admin-mayank',
-  fullName: 'Mayank Akbari',
-  email: 'm.akbari2808@gmail.com',
+  id: 'admin-master',
+  fullName: 'Mayank Akbari (Admin)',
+  email: 'admin@ojaswiinnovation.in',
   phone: '+91 70694 24393',
   role: 'ADMIN',
   city: 'Ahmedabad',
@@ -136,8 +136,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = (emailInput: string, explicitRole?: AuthUser['role'], customData?: Partial<AuthUser>) => {
     let sessionUser: AuthUser;
-    if (emailInput.trim().toLowerCase() === 'm.akbari2808@gmail.com' || explicitRole === 'ADMIN') {
-      sessionUser = { ...ADMIN_USER, ...customData };
+    if (emailInput.trim().toLowerCase() === 'admin@ojaswiinnovation.in' || emailInput.trim().toLowerCase() === 'm.akbari2808@gmail.com' || explicitRole === 'ADMIN') {
+      sessionUser = { ...ADMIN_USER, email: emailInput.trim().toLowerCase(), ...customData };
     } else {
       sessionUser = {
         id: customData?.id || `user-${Date.now()}`,

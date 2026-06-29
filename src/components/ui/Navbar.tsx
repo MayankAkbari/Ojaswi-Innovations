@@ -43,19 +43,22 @@ export const Navbar: React.FC = () => {
         </div>
       )}
 
-      {/* Header Container with Logo Near Nav Bar & Centered Nav */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-3 pb-2 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-8">
-        {/* Logo OUTSIDE Navigation Bar */}
-        <Link href="/" className="flex items-center shrink-0 group">
-          <img
-            src="/ojaswi-logo-new.png"
-            alt="Ojaswi Innovations Logo"
-            className="h-16 sm:h-20 md:h-22 lg:h-24 w-auto max-w-[260px] sm:max-w-[320px] object-contain transition-transform duration-300 group-hover:scale-105"
-          />
-        </Link>
+      {/* Header Container with Logo at Left Corner & Centered Nav */}
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 pt-3 pb-2 flex flex-col lg:flex-row items-center justify-between gap-4">
+        {/* Left Column: Logo at Corner */}
+        <div className="w-full lg:w-1/3 flex justify-center lg:justify-start">
+          <Link href="/" className="flex items-center shrink-0 group">
+            <img
+              src="/ojaswi-logo-new.png"
+              alt="Ojaswi Innovations Logo"
+              className="h-16 sm:h-20 md:h-22 lg:h-24 w-auto max-w-[260px] sm:max-w-[300px] object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+          </Link>
+        </div>
 
-        {/* Floating Pill Navigation Bar */}
-        <div className="w-full lg:w-auto relative">
+        {/* Center Column: Floating Pill Navigation Bar */}
+        <div className="w-full lg:w-auto flex justify-center shrink-0">
+          <div className="w-full lg:w-auto relative">
           <nav className="w-full bg-white/95 border border-slate-200/90 shadow-2xl rounded-3xl sm:rounded-full px-5 sm:px-8 py-2.5 sm:py-3 backdrop-blur-xl transition-all flex items-center justify-between lg:justify-end gap-6">
             {/* Desktop Navigation Links (Pages Names Only) */}
             <div className="hidden lg:flex flex-wrap items-center gap-5 xl:gap-6 text-sm font-bold text-navy-900">
@@ -162,7 +165,11 @@ export const Navbar: React.FC = () => {
               </div>
             </div>
           )}
+          </div>
         </div>
+
+        {/* Right Column: Spacer to Balance Center Nav */}
+        <div className="hidden lg:block lg:w-1/3" />
       </div>
     </header>
   );
