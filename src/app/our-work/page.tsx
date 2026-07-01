@@ -24,8 +24,24 @@ const INDUSTRIES = [
   'Dairy Businesses'
 ];
 
-const PORTFOLIO_DATA = [
-  { industry: 'Private Hospitals', title: 'Aarogya Multi-Specialty Hospital', desc: 'Appointment booking & emergency doctor contact portals built for rapid mobile loading.', tag: 'Trivikram Package ⭐' },
+interface PortfolioItem {
+  industry: string;
+  title: string;
+  desc: string;
+  tag: string;
+  link?: string;
+  image?: string;
+}
+
+const PORTFOLIO_DATA: PortfolioItem[] = [
+  { 
+    industry: 'Private Hospitals', 
+    title: 'Aarogya Multi-Specialty Hospital', 
+    desc: 'Appointment booking & emergency doctor contact portals built for rapid mobile loading.', 
+    tag: 'Trivikram Package ⭐',
+    link: 'https://aarogya-multi-specialty-hospital.vercel.app/',
+    image: '/portfolio/aarogya-logo.png'
+  },
   { industry: 'Textile Manufacturers', title: 'Shree Fabrics Export Corp', desc: 'High-resolution wholesale fabric catalog displays with B2B WhatsApp export pipelines.', tag: 'Adityanarayan Package' },
   { industry: 'Packaging Companies', title: 'Apex Corrugated Solutions', desc: 'Box dimension calculation quote request forms and industrial client testimonials.', tag: 'Someshwar Package' },
   { industry: 'Real Estate', title: 'Tejomay Heights Luxury Living', desc: '3D virtual walkthrough gallery, downloadable brochures, and site visit booking engine.', tag: 'Trivikram Package ⭐' },
@@ -88,29 +104,67 @@ export default function OurWorkPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filtered.map((item, idx) => (
           <GlassCard key={idx} className="flex flex-col justify-between space-y-6 group">
-            <div>
-              <div className="aspect-video rounded-xl bg-navy-900/5 overflow-hidden relative mb-4 border border-slate-200">
-                <img
-                  src={`https://images.unsplash.com/photo-${1500000000000 + idx * 100000}?auto=format&fit=crop&w=600&q=80`}
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute top-3 left-3 bg-navy-900/90 text-ivory-50 px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase backdrop-blur-sm">
-                  {item.industry}
+            {item.link ? (
+              <a
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block cursor-pointer group/link"
+              >
+                <div className="aspect-video rounded-xl bg-navy-900/5 overflow-hidden relative mb-4 border border-slate-200">
+                  <img
+                    src={item.image || `https://images.unsplash.com/photo-${1500000000000 + idx * 100000}?auto=format&fit=crop&w=600&q=80`}
+                    alt={item.title}
+                    className={`w-full h-full transition-transform duration-500 group-hover/link:scale-105 ${
+                      item.image ? 'object-contain bg-white p-4' : 'object-cover group-hover:scale-110'
+                    }`}
+                  />
+                  <div className="absolute top-3 left-3 bg-navy-900/90 text-ivory-50 px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase backdrop-blur-sm">
+                    {item.industry}
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-gold-600 bg-gold-500/10 px-2 py-0.5 rounded border border-gold-500/20">
-                  {item.tag}
-                </span>
-              </div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold text-gold-600 bg-gold-500/10 px-2 py-0.5 rounded border border-gold-500/20">
+                    {item.tag}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-gold-600 group-hover/link:underline">
+                    Visit Website <ExternalLink className="w-3 h-3" />
+                  </span>
+                </div>
 
-              <h3 className="text-xl font-display font-bold text-navy-900 group-hover:text-gold-600 transition-colors">
-                {item.title}
-              </h3>
-              <p className="text-slate-600 text-sm mt-2 leading-relaxed">{item.desc}</p>
-            </div>
+                <h3 className="text-xl font-display font-bold text-navy-900 group-hover/link:text-gold-600 transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-slate-600 text-sm mt-2 leading-relaxed">{item.desc}</p>
+              </a>
+            ) : (
+              <div>
+                <div className="aspect-video rounded-xl bg-navy-900/5 overflow-hidden relative mb-4 border border-slate-200">
+                  <img
+                    src={item.image || `https://images.unsplash.com/photo-${1500000000000 + idx * 100000}?auto=format&fit=crop&w=600&q=80`}
+                    alt={item.title}
+                    className={`w-full h-full transition-transform duration-500 group-hover:scale-110 ${
+                      item.image ? 'object-contain bg-white p-4' : 'object-cover'
+                    }`}
+                  />
+                  <div className="absolute top-3 left-3 bg-navy-900/90 text-ivory-50 px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase backdrop-blur-sm">
+                    {item.industry}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold text-gold-600 bg-gold-500/10 px-2 py-0.5 rounded border border-gold-500/20">
+                    {item.tag}
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-display font-bold text-navy-900 group-hover:text-gold-600 transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-slate-600 text-sm mt-2 leading-relaxed">{item.desc}</p>
+              </div>
+            )}
 
             <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
               <span className="text-xs text-slate-400">Deployed in 48h</span>
