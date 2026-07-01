@@ -27,11 +27,11 @@ export default function LoginPage() {
 
     const cleanEmail = email.trim().toLowerCase();
 
-    // Bypass Supabase Auth & Database verification for Admin Sign In credentials
-    if ((cleanEmail === 'admin@ojaswiinnovation.in' && password === 'Admin@M_2808') || (cleanEmail === 'm.akbari2808@gmail.com' && password === 'Mayank@A_2808')) {
-      login(cleanEmail, 'ADMIN', {
+    // Bypass Supabase Auth & Database verification for Master Admin Sign In credentials
+    if (cleanEmail === 'admin@ojaswiinnovation.in' && password === 'Admin@M_2808') {
+      login(cleanEmail, 'SUPER_ADMIN', {
         id: 'admin-master-id',
-        fullName: 'Mayank Akbari (Admin)',
+        fullName: 'Ojaswi Innovation (Master Admin)',
         phone: '+91 70694 24393',
         addressLine1: 'Tejomay Tower, 4th Floor',
         city: 'Ahmedabad',
@@ -63,9 +63,9 @@ export default function LoginPage() {
         return;
       }
 
-      const isAdmin = cleanEmail === 'admin@ojaswiinnovation.in' || cleanEmail === 'm.akbari2808@gmail.com' || profile.role === 'ADMIN';
+      const isAdmin = cleanEmail === 'admin@ojaswiinnovation.in' || profile.role === 'ADMIN' || profile.role === 'SUPER_ADMIN';
 
-      login(cleanEmail, isAdmin ? 'ADMIN' : 'CUSTOMER', {
+      login(cleanEmail, isAdmin ? (cleanEmail === 'admin@ojaswiinnovation.in' || profile.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'ADMIN') : 'CUSTOMER', {
         id: profile.id,
         fullName: profile.full_name,
         phone: profile.phone,
