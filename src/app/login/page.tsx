@@ -43,19 +43,11 @@ export default function LoginPage() {
     }
 
     try {
-      // Check credentials against Supabase auth first to verify email confirmation status
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      // Attempt sign in with Supabase auth silently without email confirmation blocking
+      await supabase.auth.signInWithPassword({
         email: cleanEmail,
         password,
       });
-
-      if (authError) {
-        if (authError.message.toLowerCase().includes('email not confirmed')) {
-          setError('Mandatory Verification Required: Please check your email inbox (or spam folder) for the confirmation link before logging in.');
-          setLoading(false);
-          return;
-        }
-      }
 
       // Check credentials against Supabase backend user_profiles table entry
       const { data: profile } = await supabase
