@@ -42,7 +42,14 @@ const PORTFOLIO_DATA: PortfolioItem[] = [
     link: 'https://aarogya-multi-specialty-hospital.vercel.app/',
     image: '/portfolio/aarogya-logo.png'
   },
-  { industry: 'Textile Manufacturers', title: 'Shree Fabrics Export Corp', desc: 'High-resolution wholesale fabric catalog displays with B2B WhatsApp export pipelines.', tag: 'Adityanarayan Package' },
+  { 
+    industry: 'Textile Manufacturers', 
+    title: 'Shree Fabrics Export Corp', 
+    desc: 'High-resolution wholesale fabric catalog displays with B2B WhatsApp export pipelines.', 
+    tag: 'Adityanarayan Package',
+    link: 'https://shree-fabrics-export-corp.vercel.app/',
+    image: '/portfolio/shree-fabrics-logo.png'
+  },
   { industry: 'Packaging Companies', title: 'Apex Corrugated Solutions', desc: 'Box dimension calculation quote request forms and industrial client testimonials.', tag: 'Someshwar Package' },
   { industry: 'Real Estate', title: 'Tejomay Heights Luxury Living', desc: '3D virtual walkthrough gallery, downloadable brochures, and site visit booking engine.', tag: 'Trivikram Package ⭐' },
   { industry: 'Interior Designers', title: 'Vogue Spaces Interior Studio', desc: 'Before-and-after project sliders with modular kitchen estimation calculator.', tag: 'Adityanarayan Package' },

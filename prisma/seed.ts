@@ -234,8 +234,8 @@ async function main() {
         industry: item.industry,
         title: item.title,
         description: item.description,
-        thumbnailUrl: i === 0 ? '/portfolio/aarogya-logo.png' : `https://images.unsplash.com/photo-${1500000000000 + i * 1000000}?auto=format&fit=crop&w=600&q=80`,
-        liveUrl: i === 0 ? 'https://aarogya-multi-specialty-hospital.vercel.app/' : 'https://ojaswi.com/demo',
+        thumbnailUrl: i === 0 ? '/portfolio/aarogya-logo.png' : i === 1 ? '/portfolio/shree-fabrics-logo.png' : `https://images.unsplash.com/photo-${1500000000000 + i * 1000000}?auto=format&fit=crop&w=600&q=80`,
+        liveUrl: i === 0 ? 'https://aarogya-multi-specialty-hospital.vercel.app/' : i === 1 ? 'https://shree-fabrics-export-corp.vercel.app/' : 'https://ojaswi.com/demo',
         order: i + 1
       }
     });
