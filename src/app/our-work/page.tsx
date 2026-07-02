@@ -50,7 +50,14 @@ const PORTFOLIO_DATA: PortfolioItem[] = [
     link: 'https://shree-fabrics-export-corp.vercel.app/',
     image: '/portfolio/shree-fabrics-logo.png'
   },
-  { industry: 'Packaging Companies', title: 'Apex Corrugated Solutions', desc: 'Box dimension calculation quote request forms and industrial client testimonials.', tag: 'Someshwar Package' },
+  { 
+    industry: 'Packaging Companies', 
+    title: 'Apex Corrugated Solutions', 
+    desc: 'Box dimension calculation quote request forms and industrial client testimonials.', 
+    tag: 'Someshwar Package',
+    link: 'https://apex-corrugated-solutions.vercel.app/',
+    image: '/portfolio/apex-corrugated-logo.png'
+  },
   { industry: 'Real Estate', title: 'Tejomay Heights Luxury Living', desc: '3D virtual walkthrough gallery, downloadable brochures, and site visit booking engine.', tag: 'Trivikram Package ⭐' },
   { industry: 'Interior Designers', title: 'Vogue Spaces Interior Studio', desc: 'Before-and-after project sliders with modular kitchen estimation calculator.', tag: 'Adityanarayan Package' },
   { industry: 'Hotels', title: 'The Royal Heritage Resort', desc: 'Room availability request suite and wedding banquet hall tour booking.', tag: 'Adityanarayan Package' },
