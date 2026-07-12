@@ -12,7 +12,7 @@ export const Navbar: React.FC = () => {
   const [ribbonVisible, setRibbonVisible] = useState(true);
 
   return (
-    <header className="sticky top-0 z-50 w-full transition-all duration-300 bg-ivory-50 border-b border-gold-500/30 shadow-md">
+    <header className="sticky top-0 z-50 w-full transition-all duration-300 bg-transparent">
       {/* Top Offer Countdown Ribbon */}
       {ribbonVisible && (
         <div className="bg-gradient-to-r from-navy-900 via-navy-800 to-navy-900 border-b border-gold-500/30 text-ivory-50 px-4 py-2 text-xs sm:text-sm font-medium relative">
@@ -55,20 +55,20 @@ export const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Center Column: Navigation Links Centered in Header Directly (Without Box Wrapper) on a Single Line */}
+        {/* Center Column: 3D Rounded Navigation Bar Box Displaying Only Page Names */}
         <div className="w-full lg:w-auto flex justify-center items-center shrink-0">
           <div className="w-full lg:w-auto relative">
-            <nav className="w-full lg:w-auto transition-all flex items-center justify-between lg:justify-center py-2 lg:py-0">
-              {/* Desktop Navigation Links (Only Page Names Displayed directly on the Header on a Single Horizontal Line) */}
-              <div className="hidden lg:flex flex-nowrap items-center justify-center gap-6 xl:gap-8 text-sm sm:text-base font-bold text-navy-900 whitespace-nowrap">
-                <Link href="/" className="hover:text-gold-600 transition-colors shrink-0">Home</Link>
-                <Link href="/about" className="hover:text-gold-600 transition-colors shrink-0">About</Link>
-                <Link href="/services" className="hover:text-gold-600 transition-colors shrink-0">Services</Link>
-                <Link href="/packages" className="hover:text-gold-600 transition-colors shrink-0">Packages</Link>
-                <Link href="/our-work" className="hover:text-gold-600 transition-colors shrink-0">Our Work</Link>
-                <Link href="/reviews" className="hover:text-gold-600 transition-colors shrink-0">Reviews</Link>
-                <Link href="/amc" className="hover:text-gold-600 transition-colors shrink-0">AMC</Link>
-                <Link href="/contact" className="hover:text-gold-600 transition-colors shrink-0">Contact</Link>
+            <nav className="w-full lg:w-auto bg-gradient-to-b from-white via-ivory-50 to-slate-100/95 border border-t-white border-b-slate-300 border-x-slate-200 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.15),0_8px_12px_-6px_rgba(0,0,0,0.1),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(0,0,0,0.06)] rounded-full px-6 lg:px-8 xl:px-9 py-3 transition-all duration-300 hover:shadow-[0_16px_34px_-6px_rgba(0,0,0,0.18),inset_0_2px_4px_rgba(255,255,255,1),inset_0_-2px_4px_rgba(0,0,0,0.08)] flex items-center justify-between lg:justify-center">
+              {/* Desktop Navigation Links (Only Page Names Displayed inside 3D Rounded Box on a Single Horizontal Line) */}
+              <div className="hidden lg:flex flex-nowrap items-center justify-center gap-5 xl:gap-7 text-sm font-extrabold text-navy-900 whitespace-nowrap">
+                <Link href="/" className="hover:text-gold-600 transition-colors shrink-0 py-1">Home</Link>
+                <Link href="/about" className="hover:text-gold-600 transition-colors shrink-0 py-1">About</Link>
+                <Link href="/services" className="hover:text-gold-600 transition-colors shrink-0 py-1">Services</Link>
+                <Link href="/packages" className="hover:text-gold-600 transition-colors shrink-0 py-1">Packages</Link>
+                <Link href="/our-work" className="hover:text-gold-600 transition-colors shrink-0 py-1">Our Work</Link>
+                <Link href="/reviews" className="hover:text-gold-600 transition-colors shrink-0 py-1">Reviews</Link>
+                <Link href="/amc" className="hover:text-gold-600 transition-colors shrink-0 py-1">AMC</Link>
+                <Link href="/contact" className="hover:text-gold-600 transition-colors shrink-0 py-1">Contact</Link>
               </div>
 
               {/* Mobile Menu Toggle Button */}
@@ -76,10 +76,10 @@ export const Navbar: React.FC = () => {
                 <span className="text-sm font-extrabold text-navy-900">Menu</span>
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="p-2 text-navy-900 hover:text-gold-600 transition-colors rounded-full bg-slate-100 shadow-sm"
+                  className="p-1.5 text-navy-900 hover:text-gold-600 transition-colors rounded-full bg-slate-100 shadow-inner"
                   aria-label="Toggle Navigation Menu"
                 >
-                  {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                  {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </button>
               </div>
             </nav>
