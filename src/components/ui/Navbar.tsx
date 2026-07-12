@@ -2,18 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/lib/auth-context';
-import { Sparkles, Menu, X, User, LogOut, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Sparkles, Menu, X, ArrowRight } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [ribbonVisible, setRibbonVisible] = useState(true);
 
-  const isAdminRole = user?.role && ['ADMIN', 'SALES', 'SUPPORT', 'SUPER_ADMIN'].includes(user.role);
-
   return (
-    <header className="sticky top-0 z-50 w-full transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full transition-all duration-300 bg-ivory-50 border-b border-gold-500/30 shadow-md">
       {/* Top Offer Countdown Ribbon */}
       {ribbonVisible && (
         <div className="bg-gradient-to-r from-navy-900 via-navy-800 to-navy-900 border-b border-gold-500/30 text-ivory-50 px-4 py-2 text-xs sm:text-sm font-medium relative">
@@ -43,10 +39,10 @@ export const Navbar: React.FC = () => {
         </div>
       )}
 
-      {/* Header Container with Logo at Left Corner & Centered Nav */}
-      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 pt-3 pb-2 flex flex-col lg:flex-row items-center justify-between gap-4">
-        {/* Left Column: Logo at Corner */}
-        <div className="w-full lg:w-1/3 flex justify-center lg:justify-start">
+      {/* Header Container with Logo Outside (Left Corner), Centered Rounded Nav Bar, and Right Spacer */}
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 pt-3 pb-3 flex flex-col lg:flex-row items-center justify-between gap-4">
+        {/* Left Column: Logo Outside Navigation Bar without Brand Name Text */}
+        <div className="w-full lg:w-1/3 flex justify-center lg:justify-start items-center">
           <Link href="/" className="flex items-center shrink-0 group">
             <img
               src="/ojaswi-logo-new.png"
@@ -56,63 +52,25 @@ export const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Center Column: Floating Pill Navigation Bar */}
-        <div className="w-full lg:w-auto flex justify-center shrink-0">
+        {/* Center Column: Navigation Bar Centered in Header with All Rounded Corners Displaying Only Page Names */}
+        <div className="w-full lg:w-1/3 flex justify-center items-center shrink-0">
           <div className="w-full lg:w-auto relative">
-          <nav className="w-full bg-white/95 border border-slate-200/90 shadow-2xl rounded-3xl sm:rounded-full px-5 sm:px-8 py-2.5 sm:py-3 backdrop-blur-xl transition-all flex items-center justify-between lg:justify-end gap-6">
-            {/* Desktop Navigation Links (Pages Names Only) */}
-            <div className="hidden lg:flex flex-wrap items-center gap-5 xl:gap-6 text-sm font-bold text-navy-900">
-              <Link href="/" className="hover:text-gold-600 transition-colors">Home</Link>
-              <Link href="/about" className="hover:text-gold-600 transition-colors">About</Link>
-              <Link href="/services" className="hover:text-gold-600 transition-colors">Services</Link>
-              <Link href="/packages" className="hover:text-gold-600 transition-colors">Packages</Link>
-              <Link href="/our-work" className="hover:text-gold-600 transition-colors">Our Work</Link>
-              <Link href="/reviews" className="hover:text-gold-600 transition-colors">Reviews</Link>
-              <Link href="/amc" className="hover:text-gold-600 transition-colors">AMC</Link>
-              <Link href="/contact" className="hover:text-gold-600 transition-colors">Contact</Link>
-            </div>
+            <nav className="w-full lg:w-auto bg-white/95 border border-slate-200 shadow-xl rounded-full px-6 sm:px-8 py-3 backdrop-blur-xl transition-all flex items-center justify-between lg:justify-center">
+              {/* Desktop Navigation Links (Only Page Names Displayed) */}
+              <div className="hidden lg:flex flex-wrap items-center justify-center gap-6 xl:gap-7 text-sm font-bold text-navy-900">
+                <Link href="/" className="hover:text-gold-600 transition-colors">Home</Link>
+                <Link href="/about" className="hover:text-gold-600 transition-colors">About</Link>
+                <Link href="/services" className="hover:text-gold-600 transition-colors">Services</Link>
+                <Link href="/packages" className="hover:text-gold-600 transition-colors">Packages</Link>
+                <Link href="/our-work" className="hover:text-gold-600 transition-colors">Our Work</Link>
+                <Link href="/reviews" className="hover:text-gold-600 transition-colors">Reviews</Link>
+                <Link href="/amc" className="hover:text-gold-600 transition-colors">AMC</Link>
+                <Link href="/contact" className="hover:text-gold-600 transition-colors">Contact</Link>
+              </div>
 
-            {/* User Name Clickable Button / Login */}
-            <div className="hidden lg:flex items-center gap-3 pl-3 border-l-2 border-slate-200">
-              {user ? (
-                <div className="flex items-center gap-2">
-                  <Link
-                    href={isAdminRole ? "/admin" : "/dashboard"}
-                    className="bg-navy-900 hover:bg-navy-800 text-gold-300 px-4 py-2 rounded-full font-extrabold text-xs tracking-wide flex items-center gap-2 shadow-md transition-all hover:scale-105 border border-gold-500/40"
-                  >
-                    <User className="w-3.5 h-3.5 text-gold-400" />
-                    <span>{user.fullName}</span>
-                  </Link>
-                  <button
-                    onClick={logout}
-                    className="p-1.5 text-slate-400 hover:text-danger-500 transition-colors rounded-full hover:bg-danger-50"
-                    title="Logout"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </button>
-                </div>
-              ) : (
-                <Link
-                  href="/login"
-                  className="bg-navy-900 text-ivory-50 px-5 py-2 rounded-full text-xs font-extrabold hover:bg-navy-800 transition-all shadow-md"
-                >
-                  Login
-                </Link>
-              )}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="lg:hidden flex items-center justify-between w-full">
-              <span className="text-sm font-extrabold text-navy-900">Menu</span>
-              <div className="flex items-center gap-2">
-                {user && (
-                  <Link
-                    href={isAdminRole ? "/admin" : "/dashboard"}
-                    className="text-xs bg-navy-900 text-gold-300 px-3 py-1.5 rounded-full font-extrabold flex items-center gap-1 shadow-sm"
-                  >
-                    <User className="w-3 h-3" /> {user.fullName.split(' ')[0]}
-                  </Link>
-                )}
+              {/* Mobile Menu Toggle Button */}
+              <div className="lg:hidden flex items-center justify-between w-full gap-4">
+                <span className="text-sm font-extrabold text-navy-900">Menu</span>
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   className="p-2 text-navy-900 hover:text-gold-600 transition-colors rounded-full bg-slate-100 shadow-sm"
@@ -121,56 +79,28 @@ export const Navbar: React.FC = () => {
                   {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
               </div>
-            </div>
-          </nav>
+            </nav>
 
-          {/* Mobile Dropdown Drawer */}
-          {mobileMenuOpen && (
-            <div className="absolute left-0 right-0 z-50 mt-2 bg-white/95 border border-slate-200 shadow-2xl rounded-3xl p-5 backdrop-blur-xl flex flex-col gap-3 text-base font-medium text-navy-900 lg:hidden animate-fade-in">
-              <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Home</Link>
-              <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">About</Link>
-              <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Services</Link>
-              <Link href="/packages" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Packages</Link>
-              <Link href="/our-work" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Our Work</Link>
-              <Link href="/reviews" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Reviews</Link>
-              <Link href="/amc" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">AMC</Link>
-              <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1 font-bold">Contact</Link>
-
-              <div className="pt-3 border-t border-slate-200 flex flex-col gap-2">
-                {user ? (
-                  <>
-                    <Link
-                      href={isAdminRole ? "/admin" : "/dashboard"}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="w-full text-center bg-navy-900 text-gold-300 py-3 rounded-xl text-sm font-extrabold shadow border border-gold-500/40 flex items-center justify-center gap-2"
-                    >
-                      <User className="w-4 h-4 text-gold-400" /> {user.fullName}
-                    </Link>
-                    <button
-                      onClick={() => { logout(); setMobileMenuOpen(false); }}
-                      className="w-full text-center text-danger-500 py-2 text-sm font-bold hover:underline flex items-center justify-center gap-1"
-                    >
-                      <LogOut className="w-4 h-4" /> Logout
-                    </button>
-                  </>
-                ) : (
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center bg-navy-900 text-ivory-50 py-3 rounded-xl text-sm font-extrabold shadow"
-                  >
-                    Client Login
-                  </Link>
-                )}
+            {/* Mobile Dropdown Drawer (Only Page Names Displayed) */}
+            {mobileMenuOpen && (
+              <div className="absolute left-0 right-0 z-50 mt-3 bg-white/98 border border-slate-200 shadow-2xl rounded-3xl p-6 backdrop-blur-xl flex flex-col gap-3 text-base font-medium text-navy-900 lg:hidden animate-fade-in">
+                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">Home</Link>
+                <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">About</Link>
+                <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">Services</Link>
+                <Link href="/packages" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">Packages</Link>
+                <Link href="/our-work" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">Our Work</Link>
+                <Link href="/reviews" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">Reviews</Link>
+                <Link href="/amc" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">AMC</Link>
+                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold">Contact</Link>
               </div>
-            </div>
-          )}
+            )}
           </div>
         </div>
 
-        {/* Right Column: Spacer to Balance Center Nav */}
+        {/* Right Column: Spacer to Keep Navigation Bar Perfectly Centered */}
         <div className="hidden lg:block lg:w-1/3" />
       </div>
     </header>
   );
 };
+
