@@ -67,7 +67,14 @@ const PORTFOLIO_DATA: PortfolioItem[] = [
     link: 'https://vogue-spaces-interior-studio.vercel.app/',
     image: '/portfolio/vogue-spaces-logo.png'
   },
-  { industry: 'Hotels', title: 'The Royal Heritage Resort', desc: 'Room availability request suite and wedding banquet hall tour booking.', tag: 'Adityanarayan Package' },
+  { 
+    industry: 'Hotels', 
+    title: 'The Royal Heritage Resort', 
+    desc: 'Room availability request suite and wedding banquet hall tour booking.', 
+    tag: 'Adityanarayan Package',
+    link: 'https://the-royal-heritage-resort.vercel.app/',
+    image: '/portfolio/royal-heritage-logo.png'
+  },
   { industry: 'Wedding Planners', title: 'Mangalam Grand Events', desc: 'Exquisite bridal decoration showcase and custom theme package selector.', tag: 'Someshwar Package' },
   { industry: 'Garment Wholesalers', title: 'Surat Silk Mill Direct Outlet', desc: 'Wholesale minimum order catalog with bulk WhatsApp ordering interface.', tag: 'Adityanarayan Package' },
   { industry: 'Jewellery Stores', title: 'Mahalakshmi Gold & Diamonds', desc: 'Live gold rate ticker bar with high-end diamond collection zoom display.', tag: 'Trivikram Package ⭐' },
