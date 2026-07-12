@@ -58,7 +58,7 @@ export const Navbar: React.FC = () => {
         {/* Center Column: 3D Rounded Navigation Bar Box Displaying Only Page Names */}
         <div className="w-full lg:w-auto flex justify-center items-center shrink-0">
           <div className="w-full lg:w-auto relative">
-            <nav className="w-full lg:w-auto bg-gradient-to-b from-white via-ivory-50 to-slate-100/95 border border-t-white border-b-slate-300 border-x-slate-200 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.15),0_8px_12px_-6px_rgba(0,0,0,0.1),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(0,0,0,0.06)] rounded-full px-6 lg:px-8 xl:px-9 py-3 transition-all duration-300 hover:shadow-[0_16px_34px_-6px_rgba(0,0,0,0.18),inset_0_2px_4px_rgba(255,255,255,1),inset_0_-2px_4px_rgba(0,0,0,0.08)] flex items-center justify-between lg:justify-center">
+            <nav className="w-full lg:w-auto bg-gradient-to-b from-white/70 via-white/50 to-white/35 backdrop-blur-xl border border-white/60 shadow-[0_12px_32px_-6px_rgba(11,31,61,0.18),0_4px_12px_-2px_rgba(11,31,61,0.1),inset_0_2px_6px_rgba(255,255,255,0.9),inset_0_-2px_6px_rgba(255,255,255,0.3)] rounded-full px-6 lg:px-8 xl:px-9 py-3 transition-all duration-300 hover:bg-gradient-to-b hover:from-white/80 hover:via-white/60 hover:to-white/45 hover:shadow-[0_16px_38px_-6px_rgba(11,31,61,0.22),inset_0_2px_8px_rgba(255,255,255,1),inset_0_-2px_8px_rgba(255,255,255,0.4)] flex items-center justify-between lg:justify-center">
               {/* Desktop Navigation Links (Only Page Names Displayed inside 3D Rounded Box on a Single Horizontal Line) */}
               <div className="hidden lg:flex flex-nowrap items-center justify-center gap-5 xl:gap-7 text-sm font-extrabold text-navy-900 whitespace-nowrap">
                 <Link href="/" className="hover:text-gold-600 transition-colors shrink-0 py-1">Home</Link>
@@ -86,7 +86,7 @@ export const Navbar: React.FC = () => {
 
             {/* Mobile Dropdown Drawer (Only Page Names Displayed) */}
             {mobileMenuOpen && (
-              <div className="absolute left-0 right-0 z-50 mt-3 bg-white/98 border border-slate-200 shadow-2xl rounded-3xl p-6 backdrop-blur-xl flex flex-col gap-3 text-base font-medium text-navy-900 lg:hidden animate-fade-in">
+              <div className="absolute left-0 right-0 z-50 mt-3 bg-gradient-to-b from-white/80 via-white/65 to-white/50 backdrop-blur-2xl border border-white/60 shadow-[0_20px_45px_-10px_rgba(11,31,61,0.2),inset_0_2px_6px_rgba(255,255,255,0.9)] rounded-3xl p-6 flex flex-col gap-3 text-base font-medium text-navy-900 lg:hidden animate-fade-in">
                 <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">Home</Link>
                 <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">About</Link>
                 <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">Services</Link>
