@@ -52,12 +52,12 @@ export const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Center Column: Navigation Bar Centered in Header with All Rounded Corners Displaying Only Page Names on a Single Line */}
+        {/* Center Column: Navigation Links Centered in Header Directly (Without Box Wrapper) on a Single Line */}
         <div className="w-full lg:w-auto flex justify-center items-center shrink-0">
           <div className="w-full lg:w-auto relative">
-            <nav className="w-full lg:w-auto bg-white/95 border border-slate-200 shadow-xl rounded-full px-5 lg:px-7 xl:px-8 py-3 backdrop-blur-xl transition-all flex items-center justify-between lg:justify-center">
-              {/* Desktop Navigation Links (Only Page Names Displayed on a Single Horizontal Line) */}
-              <div className="hidden lg:flex flex-nowrap items-center justify-center gap-5 xl:gap-7 text-sm font-bold text-navy-900 whitespace-nowrap">
+            <nav className="w-full lg:w-auto transition-all flex items-center justify-between lg:justify-center py-2 lg:py-0">
+              {/* Desktop Navigation Links (Only Page Names Displayed directly on the Header on a Single Horizontal Line) */}
+              <div className="hidden lg:flex flex-nowrap items-center justify-center gap-6 xl:gap-8 text-sm sm:text-base font-bold text-navy-900 whitespace-nowrap">
                 <Link href="/" className="hover:text-gold-600 transition-colors shrink-0">Home</Link>
                 <Link href="/about" className="hover:text-gold-600 transition-colors shrink-0">About</Link>
                 <Link href="/services" className="hover:text-gold-600 transition-colors shrink-0">Services</Link>
