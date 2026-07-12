@@ -40,9 +40,9 @@ export const Navbar: React.FC = () => {
       )}
 
       {/* Header Container with Logo Outside (Left Corner), Centered Rounded Nav Bar, and Right Spacer */}
-      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 pt-3 pb-3 flex flex-col lg:flex-row items-center justify-between gap-4">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-8 pt-3 pb-3 flex flex-col lg:flex-row items-center justify-between gap-4">
         {/* Left Column: Logo Outside Navigation Bar without Brand Name Text */}
-        <div className="w-full lg:w-1/3 flex justify-center lg:justify-start items-center">
+        <div className="w-full lg:w-auto lg:flex-1 flex justify-center lg:justify-start items-center">
           <Link href="/" className="flex items-center shrink-0 group">
             <img
               src="/ojaswi-logo-new.png"
@@ -52,20 +52,20 @@ export const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Center Column: Navigation Bar Centered in Header with All Rounded Corners Displaying Only Page Names */}
-        <div className="w-full lg:w-1/3 flex justify-center items-center shrink-0">
+        {/* Center Column: Navigation Bar Centered in Header with All Rounded Corners Displaying Only Page Names on a Single Line */}
+        <div className="w-full lg:w-auto flex justify-center items-center shrink-0">
           <div className="w-full lg:w-auto relative">
-            <nav className="w-full lg:w-auto bg-white/95 border border-slate-200 shadow-xl rounded-full px-6 sm:px-8 py-3 backdrop-blur-xl transition-all flex items-center justify-between lg:justify-center">
-              {/* Desktop Navigation Links (Only Page Names Displayed) */}
-              <div className="hidden lg:flex flex-wrap items-center justify-center gap-6 xl:gap-7 text-sm font-bold text-navy-900">
-                <Link href="/" className="hover:text-gold-600 transition-colors">Home</Link>
-                <Link href="/about" className="hover:text-gold-600 transition-colors">About</Link>
-                <Link href="/services" className="hover:text-gold-600 transition-colors">Services</Link>
-                <Link href="/packages" className="hover:text-gold-600 transition-colors">Packages</Link>
-                <Link href="/our-work" className="hover:text-gold-600 transition-colors">Our Work</Link>
-                <Link href="/reviews" className="hover:text-gold-600 transition-colors">Reviews</Link>
-                <Link href="/amc" className="hover:text-gold-600 transition-colors">AMC</Link>
-                <Link href="/contact" className="hover:text-gold-600 transition-colors">Contact</Link>
+            <nav className="w-full lg:w-auto bg-white/95 border border-slate-200 shadow-xl rounded-full px-5 lg:px-7 xl:px-8 py-3 backdrop-blur-xl transition-all flex items-center justify-between lg:justify-center">
+              {/* Desktop Navigation Links (Only Page Names Displayed on a Single Horizontal Line) */}
+              <div className="hidden lg:flex flex-nowrap items-center justify-center gap-5 xl:gap-7 text-sm font-bold text-navy-900 whitespace-nowrap">
+                <Link href="/" className="hover:text-gold-600 transition-colors shrink-0">Home</Link>
+                <Link href="/about" className="hover:text-gold-600 transition-colors shrink-0">About</Link>
+                <Link href="/services" className="hover:text-gold-600 transition-colors shrink-0">Services</Link>
+                <Link href="/packages" className="hover:text-gold-600 transition-colors shrink-0">Packages</Link>
+                <Link href="/our-work" className="hover:text-gold-600 transition-colors shrink-0">Our Work</Link>
+                <Link href="/reviews" className="hover:text-gold-600 transition-colors shrink-0">Reviews</Link>
+                <Link href="/amc" className="hover:text-gold-600 transition-colors shrink-0">AMC</Link>
+                <Link href="/contact" className="hover:text-gold-600 transition-colors shrink-0">Contact</Link>
               </div>
 
               {/* Mobile Menu Toggle Button */}
@@ -98,7 +98,7 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Right Column: Spacer to Keep Navigation Bar Perfectly Centered */}
-        <div className="hidden lg:block lg:w-1/3" />
+        <div className="hidden lg:block lg:flex-1" />
       </div>
     </header>
   );
