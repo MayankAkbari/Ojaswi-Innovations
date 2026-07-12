@@ -2,9 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Sparkles, Menu, X, ArrowRight } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
+import { Sparkles, Menu, X, ArrowRight, User, LogOut } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
+  const { user, logout } = useAuth();
+  const isAdminRole = user?.role && ['ADMIN', 'SALES', 'SUPPORT', 'SUPER_ADMIN'].includes(user.role);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [ribbonVisible, setRibbonVisible] = useState(true);
 
@@ -91,14 +94,71 @@ export const Navbar: React.FC = () => {
                 <Link href="/our-work" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">Our Work</Link>
                 <Link href="/reviews" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">Reviews</Link>
                 <Link href="/amc" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">AMC</Link>
-                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold">Contact</Link>
+                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-gold-600 py-1.5 font-bold border-b border-slate-100">Contact</Link>
+                
+                <div className="pt-3 mt-1 border-t border-slate-200 flex flex-col gap-2.5">
+                  {user ? (
+                    <div className="flex flex-col gap-2">
+                      <Link
+                        href={isAdminRole ? "/admin" : "/dashboard"}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 hover:from-gold-400 hover:to-gold-300 text-navy-900 px-4 py-2.5 rounded-full font-extrabold text-xs tracking-wide shadow-md border border-gold-300"
+                      >
+                        <User className="w-4 h-4 text-navy-900" />
+                        <span>{isAdminRole ? "Admin Portal" : "Client Dashboard"} ({user.fullName})</span>
+                      </Link>
+                      <button
+                        onClick={() => { logout(); setMobileMenuOpen(false); }}
+                        className="w-full py-2 text-xs font-bold text-danger-600 bg-slate-50 border border-danger-500/30 rounded-full flex items-center justify-center gap-1.5 shadow-sm"
+                      >
+                        <LogOut className="w-3.5 h-3.5" /> Logout
+                      </button>
+                    </div>
+                  ) : (
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 hover:from-gold-400 hover:to-gold-300 text-navy-900 px-5 py-2.5 rounded-full text-xs font-extrabold shadow-md border border-gold-300"
+                    >
+                      <User className="w-4 h-4 text-navy-900" />
+                      <span>Admin / Client Portal Login</span>
+                    </Link>
+                  )}
+                </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Right Column: Spacer to Keep Navigation Bar Perfectly Centered */}
-        <div className="hidden lg:block lg:flex-1" />
+        {/* Right Column: Admin / Client Portal Button and Logout Transferred from Footer */}
+        <div className="hidden lg:flex lg:flex-1 justify-end items-center gap-2.5 shrink-0">
+          {user ? (
+            <div className="flex items-center gap-2.5">
+              <Link
+                href={isAdminRole ? "/admin" : "/dashboard"}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 hover:from-gold-400 hover:to-gold-300 text-navy-900 px-4 py-2 rounded-full font-extrabold text-xs tracking-wide shadow-md transition-all hover:scale-105 border border-gold-300 shrink-0"
+              >
+                <User className="w-3.5 h-3.5 text-navy-900 shrink-0" />
+                <span className="truncate max-w-[200px] xl:max-w-[260px]">{isAdminRole ? "Admin Portal" : "Client Dashboard"} ({user.fullName})</span>
+              </Link>
+              <button
+                onClick={logout}
+                className="px-3.5 py-2 text-xs font-bold text-danger-600 hover:text-danger-700 bg-white hover:bg-slate-50 border border-danger-500/30 rounded-full transition-all flex items-center gap-1 shadow-sm shrink-0"
+                title="Logout"
+              >
+                <LogOut className="w-3.5 h-3.5 shrink-0" /> Logout
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 hover:from-gold-400 hover:to-gold-300 text-navy-900 px-5 py-2 rounded-full text-xs font-extrabold shadow-md transition-all hover:scale-105 border border-gold-300 shrink-0"
+            >
+              <User className="w-3.5 h-3.5 text-navy-900 shrink-0" />
+              <span>Admin / Client Login</span>
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   );

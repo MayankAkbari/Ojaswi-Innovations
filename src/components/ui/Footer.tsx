@@ -32,36 +32,6 @@ export const Footer: React.FC = () => {
               <ShieldCheck className="w-4 h-4 text-gold-400 shrink-0" />
               <span>A proud flagship sub-brand of <strong>Tejomay Group Pvt Ltd</strong></span>
             </div>
-
-            {/* Admin Portal / Client Login Button Transferred from Header */}
-            <div className="pt-3">
-              {user ? (
-                <div className="flex flex-wrap items-center gap-3">
-                  <Link
-                    href={isAdminRole ? "/admin" : "/dashboard"}
-                    className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 hover:from-gold-400 hover:to-gold-300 text-navy-900 px-5 py-2.5 rounded-full font-extrabold text-xs tracking-wide shadow-lg transition-all hover:scale-105 border border-gold-300"
-                  >
-                    <User className="w-4 h-4 text-navy-900" />
-                    <span>{isAdminRole ? "Admin Portal" : "Client Dashboard"} ({user.fullName})</span>
-                  </Link>
-                  <button
-                    onClick={logout}
-                    className="px-4 py-2 text-xs font-bold text-danger-400 hover:text-danger-300 bg-navy-800 hover:bg-navy-700 border border-danger-500/30 rounded-full transition-all flex items-center gap-1.5 shadow"
-                    title="Logout"
-                  >
-                    <LogOut className="w-3.5 h-3.5" /> Logout
-                  </button>
-                </div>
-              ) : (
-                <Link
-                  href="/login"
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 hover:from-gold-400 hover:to-gold-300 text-navy-900 px-6 py-2.5 rounded-full text-xs font-extrabold shadow-lg transition-all hover:scale-105 border border-gold-300"
-                >
-                  <User className="w-4 h-4 text-navy-900" />
-                  <span>Admin / Client Portal Login</span>
-                </Link>
-              )}
-            </div>
           </div>
 
           {/* Col 3: Quick Navigation */}
