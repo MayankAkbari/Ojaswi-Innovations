@@ -59,7 +59,14 @@ const PORTFOLIO_DATA: PortfolioItem[] = [
     image: '/portfolio/apex-corrugated-logo.png'
   },
   { industry: 'Real Estate', title: 'Tejomay Heights Luxury Living', desc: '3D virtual walkthrough gallery, downloadable brochures, and site visit booking engine.', tag: 'Trivikram Package ⭐' },
-  { industry: 'Interior Designers', title: 'Vogue Spaces Interior Studio', desc: 'Before-and-after project sliders with modular kitchen estimation calculator.', tag: 'Adityanarayan Package' },
+  { 
+    industry: 'Interior Designers', 
+    title: 'Vogue Spaces Interior Studio', 
+    desc: 'Before-and-after project sliders with modular kitchen estimation calculator.', 
+    tag: 'Adityanarayan Package',
+    link: 'https://vogue-spaces-interior-studio.vercel.app/',
+    image: '/portfolio/vogue-spaces-logo.png'
+  },
   { industry: 'Hotels', title: 'The Royal Heritage Resort', desc: 'Room availability request suite and wedding banquet hall tour booking.', tag: 'Adityanarayan Package' },
   { industry: 'Wedding Planners', title: 'Mangalam Grand Events', desc: 'Exquisite bridal decoration showcase and custom theme package selector.', tag: 'Someshwar Package' },
   { industry: 'Garment Wholesalers', title: 'Surat Silk Mill Direct Outlet', desc: 'Wholesale minimum order catalog with bulk WhatsApp ordering interface.', tag: 'Adityanarayan Package' },
